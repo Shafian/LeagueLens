@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Arbitrage Betting</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        function calculateArbitrage() {
+            const odds1 = document.getElementById('odds1').value;
+            const odds2 = document.getElementById('odds2').value;
+            const stake = parseFloat(document.getElementById('stake').value);
+
+            if (!odds1 || !odds2 || !stake) {
+                alert('Please enter valid numbers for all fields.');
+                return;
+            }
+
+            const convertOddsToDecimal = (odds) => {
+                if (odds.startsWith('+')) {
+                    return 1 + parseFloat(odds) / 100;
+                } else if (odds.startsWith('-')) {
+                    return 1 + 100 / Math.abs(parseFloat(odds));
+                } else {
+                    return parseFloat(odds);
+                }
+            };
+
+            const decimalOdds1 = convertOddsToDecimal(odds1);
+            const decimalOdds2 = convertOddsToDecimal(odds2);
+
+            const impliedProb1 = 1 / decimalOdds1;
+            const impliedProb2 = 1 / decimalOdds2;
+            const totalImpliedProb = impliedProb1 + impliedProb2;
+
+            if (totalImpliedProb >= 1) {
+                document.getElementById('result').innerText = 'This is not an arbitrage opportunity.';
+                return;
+            }
+
+            const stake1 = (stake * impliedProb2) / totalImpliedProb;
+            const stake2 = (stake * impliedProb1) / totalImpliedProb;
+            const profit = (stake / totalImpliedProb) - stake;
+
+            document.getElementById('result').innerHTML = `
+                Stake on Outcome 1: $${stake1.toFixed(2)}<br>
+                Stake on Outcome 2: $${stake2.toFixed(2)}<br>
+                Guaranteed Profit: $${profit.toFixed(2)}
+            `;
+        }
+    </script>
+</head>
+<body>
+    <header class="site-header">
+        <h1>Arbitrage Betting</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="soccer.html">Soccer</a></li>
+                <li><a href="nba.html">NBA</a></li>
+                <li><a href="arbitrage.html">Arbitrage Betting</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>What is Arbitrage Betting?</h2>
+            <p>Arbitrage betting is a strategy that allows you to place bets on all possible outcomes of an event using different bookmakers to guarantee a profit, regardless of the result. This method exploits differences in odds offered by various betting platforms.</p>
+        </section>
+
+        <section>
+            <h2>How It Works</h2>
+            <ol>
+                <li>Identify discrepancies in odds between bookmakers.</li>
+                <li>Calculate the implied probabilities to ensure they total less than 100%.</li>
+                <li>Place proportional bets on all outcomes to lock in a profit.</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>Example Calculation</h2>
+            <p>Consider a tennis match where:</p>
+            <ul>
+                <li>Bookmaker A offers odds of +130 for Player 1 to win.</li>
+                <li>Bookmaker B offers odds of -230 for Player 2 to win.</li>
+            </ul>
+            <p>You can calculate the implied probabilities and bet amounts to ensure a profit regardless of the winner.</p>
+        </section>
+
+        <section>
+            <h2>Arbitrage Betting Calculator</h2>
+            <p>Enter the odds and your total stake to calculate the guaranteed profit. Please follow these rules when using the calculator:</p>
+            <ul>
+                <li>Ensure the odds are from two different bookmakers.</li>
+                <li>Input odds in American format (e.g., +130, -230).</li>
+                <li>The total stake should be a positive number.</li>
+                <li>The calculator will only work if the total implied probability is less than 100%.</li>
+                <li>Double-check all inputs for accuracy before calculating.</li>
+            </ul>
+            <form onsubmit="event.preventDefault(); calculateArbitrage();">
+                <label for="odds1">Odds for Outcome 1:</label>
+                <input type="text" id="odds1" required><br>
+
+                <label for="odds2">Odds for Outcome 2:</label>
+                <input type="text" id="odds2" required><br>
+
+                <label for="stake">Total Stake ($):</label>
+                <input type="number" id="stake" step="0.01" required><br>
+
+                <button type="submit">Calculate</button>
+            </form>
+
+            <div id="result" style="margin-top: 20px; font-weight: bold;"></div>
+        </section>
+
+        <section>
+            <h2>Risks of Arbitrage Betting</h2>
+            <ul>
+                <li>Bookmakers might limit or ban accounts suspected of arbitrage betting.</li>
+                <li>Odds may change before you can complete all bets.</li>
+                <li>Mistakes in calculation can lead to losses.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 LeagueLens. All rights reserved.</p>
+    </footer>
+</body>
+</html>

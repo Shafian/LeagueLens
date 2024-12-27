@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Expected Value Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .site-header {
+            background-color: #007bff;
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        .site-header h1 {
+            margin: 0;
+        }
+        nav {
+            background: #333;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav ul li {
+            margin: 0;
+        }
+        nav ul li a {
+            display: block;
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background 0.3s;
+        }
+        nav ul li a:hover {
+            background: #555;
+        }
+        main {
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        h2 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        form label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: left;
+        }
+        form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        form button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            background-color: #e9f7ff;
+            font-size: 16px;
+        }
+    </style>
+    <script>
+        function calculateExpectedValue() {
+            const winProb = parseFloat(document.getElementById('winProb').value) / 100;
+            const profit = parseFloat(document.getElementById('profit').value);
+            const loseProb = parseFloat(document.getElementById('loseProb').value) / 100;
+            const cost = parseFloat(document.getElementById('cost').value);
+
+            if (isNaN(winProb) || isNaN(profit) || isNaN(loseProb) || isNaN(cost)) {
+                alert('Please fill in all fields with valid numbers.');
+                return;
+            }
+
+            const expectedValue = (winProb * profit) - (loseProb * cost);
+            document.getElementById('result').innerText = `Expected Value: $${expectedValue.toFixed(2)}`;
+        }
+    </script>
+</head>
+<body>
+    <header class="site-header">
+        <h1>Expected Value Calculator</h1>
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="soccer.html">Soccer</a></li>
+                <li><a href="arbitrage.html">Arbitrage Betting</a></li>
+                <li><a href="Profit_Calendar.html">Profit Calendar</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Expected Value Calculator</h2>
+        <form onsubmit="event.preventDefault(); calculateExpectedValue();">
+            <label for="winProb">Winning Probability (%):</label>
+            <input type="number" id="winProb" placeholder="Enter winning probability" required>
+
+            <label for="profit">Profit if Win ($):</label>
+            <input type="number" id="profit" placeholder="Enter profit amount" required>
+
+            <label for="loseProb">Losing Probability (%):</label>
+            <input type="number" id="loseProb" placeholder="Enter losing probability" required>
+
+            <label for="cost">Cost if Lose ($):</label>
+            <input type="number" id="cost" placeholder="Enter losing cost" required>
+
+            <button type="submit">Calculate Expected Value</button>
+        </form>
+        <div id="result"></div>
+    </main>
+</body>
+</html>

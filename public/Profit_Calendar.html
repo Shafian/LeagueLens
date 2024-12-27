@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profit Calendar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .navbar {
+            background-color: #0044cc;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .navbar ul li {
+            margin: 0 10px;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .navbar ul li a:hover {
+            color: #ffcc00;
+        }
+
+        .calendar {
+            width: 90%;
+            max-width: 600px;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .calendar-header span {
+            font-size: 1em;
+            color: #28a745;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+
+        .day {
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+
+        .bets-list {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .bets-list h3 {
+            margin-top: 0;
+        }
+
+        .bet-item {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bet-item:last-child {
+            border-bottom: none;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <a href="index.html" style="color: #fff; text-decoration: none; font-size: 1.2em;">Sports Central</a>
+        </div>
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="soccer.html">Soccer</a></li>
+            <li><a href="arbitrage.html">Arbitrage Betting</a></li>
+            <li><a href="Profit_Calendar.html">Profit Calendar</a></li>
+            <li><a href="Sign_In.html">Sign In</a></li>
+        </ul>
+    </div>
+
+    <div class="calendar">
+        <div class="calendar-header">
+            <h2>Dec 2024</h2>
+            <span>Total profit: +$14.90</span>
+        </div>
+        <div class="calendar-grid">
+            <div class="day"><div class="day-header">Sun</div><div class="day-content"></div></div>
+            <div class="day"><div class="day-header">Mon</div><div class="day-content"></div></div>
+            <div class="day"><div class="day-header">Tue</div><div class="day-content"></div></div>
+            <div class="day"><div class="day-header">Wed</div><div class="day-content"></div></div>
+            <div class="day"><div class="day-header">Thu</div><div class="day-content"></div></div>
+            <div class="day"><div class="day-header">Fri</div><div class="day-content"></div></div>
+            <div class="day"><div class="day-header">Sat</div><div class="day-content"></div></div>
+
+            <div class="day"><div class="day-content">1</div></div>
+            <div class="day"><div class="day-content">2</div></div>
+            <div class="day"><div class="day-content">3</div></div>
+            <div class="day"><div class="day-content">4</div></div>
+            <div class="day"><div class="day-content">5</div></div>
+            <div class="day"><div class="day-content">6</div></div>
+            <div class="day"><div class="day-content">7</div></div>
+            <div class="day"><div class="day-content">8</div></div>
+            <div class="day"><div class="day-content">9</div></div>
+            <div class="day"><div class="day-content">10</div></div>
+            <div class="day"><div class="day-content">11</div></div>
+            <div class="day"><div class="day-content">12</div></div>
+            <div class="day"><div class="day-content">13</div></div>
+            <div class="day"><div class="day-content">14</div></div>
+            <div class="day"><div class="day-content">15</div></div>
+            <div class="day"><div class="day-content">16</div></div>
+            <div class="day"><div class="day-content">17</div></div>
+            <div class="day"><div class="day-content">18</div></div>
+            <div class="day"><div class="day-content">19</div></div>
+            <div class="day"><div class="day-content">20</div></div>
+            <div class="day"><div class="day-content">21</div></div>
+            <div class="day"><div class="day-content">22</div></div>
+            <div class="day"><div class="day-content">23</div></div>
+            <div class="day"><div class="day-content">24</div></div>
+            <div class="day"><div class="day-content">25</div></div>
+            <div class="day"><div class="day-content">26</div></div>
+            <div class="day"><div class="day-content">27</div></div>
+            <div class="day"><div class="day-content">28</div></div>
+            <div class="day"><div class="day-content">29</div></div>
+            <div class="day"><div class="day-content">30</div></div>
+            <div class="day"><div class="day-content">31</div></div>
+        </div>
+    </div>
+
+    <div class="bets-list">
+        <h3>Following Bets</h3>
+        <div id="bets-container"></div>
+    </div>
+
+    <script>
+        function loadBets() {
+            const bets = JSON.parse(localStorage.getItem('bets')) || [];
+            const betsContainer = document.getElementById('bets-container');
+
+            if (bets.length === 0) {
+                betsContainer.innerHTML = '<p>No bets saved yet.</p>';
+                return;
+            }
+
+            betsContainer.innerHTML = ''; // Clear existing content
+
+            bets.forEach((bet, index) => {
+                const betItem = document.createElement('div');
+                betItem.classList.add('bet-item');
+                betItem.innerHTML = `
+                    <div>
+                        <p><strong>Bet ${index + 1}:</strong></p>
+                        <p>Odds for Outcome 1: ${bet.odds1}</p>
+                        <p>Odds for Outcome 2: ${bet.odds2}</p>
+                    </div>
+                    <button class="delete-btn" onclick="deleteBet(${index})">Delete</button>
+                `;
+                betsContainer.appendChild(betItem);
+            });
+        }
+
+        function deleteBet(index) {
+            let bets = JSON.parse(localStorage.getItem('bets')) || [];
+            bets.splice(index, 1); // Remove the bet at the specified index
+            localStorage.setItem('bets', JSON.stringify(bets)); // Update localStorage
+            loadBets(); // Refresh the displayed list
+        }
+
+        document.addEventListener('DOMContentLoaded', loadBets);
+    </script>
+</body>
+</html>

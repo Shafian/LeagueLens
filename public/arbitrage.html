@@ -105,6 +105,25 @@
             background-color: #e9f7ff;
             font-size: 16px;
         }
+        .action-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .action-buttons button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .action-buttons button:hover {
+            background-color: #0056b3;
+        }
         section {
             margin-bottom: 30px;
         }
@@ -154,10 +173,21 @@
             const profit = (stake / totalImpliedProb) - stake;
 
             document.getElementById('result').innerHTML = `
-                <strong>Stake on Outcome 1:</strong> $${stake1.toFixed(2)}<br>
-                <strong>Stake on Outcome 2:</strong> $${stake2.toFixed(2)}<br>
+                <strong>Stake on Outcome 1:</strong> $${stake1.toFixed(2)} <br>
+                <strong>Stake on Outcome 2:</strong> $${stake2.toFixed(2)} <br>
                 <strong>Guaranteed Profit:</strong> $${profit.toFixed(2)}
+                <div class="action-buttons">
+                    <button onclick="saveBet('${odds1}', '${odds2}')">Following</button>
+                    <button onclick="alert('Not Following')">Not Following</button>
+                </div>
             `;
+        }
+
+        function saveBet(odds1, odds2) {
+            const bets = JSON.parse(localStorage.getItem('bets')) || [];
+            bets.push({ odds1, odds2 });
+            localStorage.setItem('bets', JSON.stringify(bets));
+            alert('Bet saved successfully! Go to the Profit Calendar to view.');
         }
     </script>
 </head>
@@ -166,10 +196,11 @@
         <h1>Arbitrage Betting</h1>
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
+                <li><a href="home.html">Home</a></li>
                 <li><a href="soccer.html">Soccer</a></li>
-                <li><a href="nba.html">NBA</a></li>
                 <li><a href="arbitrage.html">Arbitrage Betting</a></li>
+                <li><a href="Profit_Calendar.html">Profit Calendar</a></li>
+                <li><a href="Expected_Value_Calculator.html">Expected Value Calculator</a></li>
             </ul>
         </nav>
     </header>
@@ -201,14 +232,6 @@
 
         <section>
             <h2>Arbitrage Betting Calculator</h2>
-            <p>Enter the odds and your total stake to calculate the guaranteed profit. Please follow these rules when using the calculator:</p>
-            <ul>
-                <li>Ensure the odds are from two different bookmakers.</li>
-                <li>Input odds in American format (e.g., +130, -230).</li>
-                <li>The total stake should be a positive number.</li>
-                <li>The calculator will only work if the total implied probability is less than 100%.</li>
-                <li>Double-check all inputs for accuracy before calculating.</li>
-            </ul>
             <form onsubmit="event.preventDefault(); calculateArbitrage();">
                 <label for="odds1">Odds for Outcome 1:</label>
                 <input type="text" id="odds1" required><br>
@@ -221,17 +244,7 @@
 
                 <button type="submit">Calculate</button>
             </form>
-
             <div id="result"></div>
-        </section>
-
-        <section>
-            <h2>Risks of Arbitrage Betting</h2>
-            <ul>
-                <li>Bookmakers might limit or ban accounts suspected of arbitrage betting.</li>
-                <li>Odds may change before you can complete all bets.</li>
-                <li>Mistakes in calculation can lead to losses.</li>
-            </ul>
         </section>
     </main>
 

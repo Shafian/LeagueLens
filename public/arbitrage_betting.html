@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Arbitrage Betting</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .site-header {
+            background-color: #007bff;
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        .site-header h1 {
+            margin: 0;
+        }
+        nav {
+            background: #333;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav ul li {
+            margin: 0;
+        }
+        nav ul li a {
+            display: block;
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background 0.3s;
+        }
+        nav ul li a:hover {
+            background: #555;
+        }
+        main {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+        form {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            background-color: #f9f9f9;
+        }
+        form label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        form button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            background-color: #e9f7ff;
+            font-size: 16px;
+        }
+        .action-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .action-buttons button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .action-buttons button:hover {
+            background-color: #0056b3;
+        }
+        section {
+            margin-bottom: 30px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px 0;
+            background: #333;
+            color: white;
+        }
+    </style>
+    <script>
+        function calculateArbitrage() {
+            const odds1 = document.getElementById('odds1').value.trim();
+            const odds2 = document.getElementById('odds2').value.trim();
+            const stake = parseFloat(document.getElementById('stake').value);
+
+            if (!odds1 || !odds2 || isNaN(stake) || stake <= 0) {
+                alert('Please enter valid numbers for all fields.');
+                return;
+            }
+
+            // Convert American odds to decimal odds
+            const convertOddsToDecimal = (odds) => {
+                if (odds.startsWith('+')) {
+                    return 1 + parseFloat(odds) / 100;
+                } else if (odds.startsWith('-')) {
+                    return 1 + 100 / Math.abs(parseFloat(odds));
+                } else {
+                    alert('Invalid odds format. Please use American odds (+/-).');
+                    throw new Error('Invalid odds format.');
+                }
+            };
+
+            try {
+                const decimalOdds1 = convertOddsToDecimal(odds1);
+                const decimalOdds2 = convertOddsToDecimal(odds2);
+
+                // Calculate implied probabilities
+                const impliedProb1 = 1 / decimalOdds1;
+                const impliedProb2 = 1 / decimalOdds2;
+                const totalImpliedProb = impliedProb1 + impliedProb2;
+
+                // Check if it's an arbitrage opportunity
+                if (totalImpliedProb >= 1) {
+                    document.getElementById('result').innerText = 
+                        'This is not an arbitrage opportunity. Total implied probability exceeds 100%.';
+                    return;
+                }
+
+                // Calculate stakes and profit
+                const stake1 = Math.round((stake * impliedProb2) / totalImpliedProb);
+                const stake2 = Math.round((stake * impliedProb1) / totalImpliedProb);
+                const profit = Math.round((stake / totalImpliedProb) - stake);
+
+                // Display results
+                document.getElementById('result').innerHTML = `
+                    <strong>Stake on Outcome 1:</strong> $${stake1} <br>
+                    <strong>Stake on Outcome 2:</strong> $${stake2} <br>
+                    <strong>Guaranteed Profit:</strong> $${profit}
+                    <div class="action-buttons">
+                        <button onclick="saveBet('${odds1}', '${odds2}')">Following</button>
+                        <button onclick="alert('Not Following')">Not Following</button>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error calculating arbitrage:', error);
+            }
+        }
+
+        function saveBet(odds1, odds2) {
+            const bets = JSON.parse(localStorage.getItem('bets')) || [];
+            bets.push({ odds1, odds2 });
+            localStorage.setItem('bets', JSON.stringify(bets));
+            alert('Bet saved successfully! Go to the Profit Calendar to view.');
+        }
+    </script>
+</head>
+<body>
+    <header class="site-header">
+        <h1>Arbitrage Betting</h1>
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="soccer.html">Soccer</a></li>
+                <li><a href="arbitrage_betting.html">Arbitrage Betting</a></li>
+                <li><a href="arbitrage_calculator.html">Arbitrage Calculator</a></li>
+                <li><a href="Profit_Calendar.html">Profit Calendar</a></li>
+                <li><a href="Expected_Value_Calculator.html">Expected Value Calculator</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>What is Arbitrage Round Betting?</h2>
+            <p>Arbitrage betting is a strategy that allows you to place bets on all possible outcomes of an event using different bookmakers to guarantee a profit, regardless of the result. This method exploits differences in odds offered by various betting platforms.</p>
+        </section>
+
+        <section>
+            <h2>How It Works</h2>
+            <ol>
+                <li>Identify discrepancies in odds between bookmakers.</li>
+                <li>Calculate the implied probabilities to ensure they total less than 100%.</li>
+                <li>Place proportional bets on all outcomes to lock in a profit.</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>Example Calculation</h2>
+            <p>Consider a tennis match where:</p>
+            <ul>
+                <li>Bookmaker A offers odds of +130 for Player 1 to win.</li>
+                <li>Bookmaker B offers odds of -230 for Player 2 to win.</li>
+            </ul>
+            <p>You can calculate the implied probabilities and bet amounts to ensure a profit regardless of the winner.</p>
+        </section>
+
+        <section>
+            <h2>Arbitrage Betting Calculator</h2>
+            <form onsubmit="event.preventDefault(); calculateArbitrage();">
+                <label for="odds1">Odds for Outcome 1:</label>
+                <input type="text" id="odds1" required><br>
+
+                <label for="odds2">Odds for Outcome 2:</label>
+                <input type="text" id="odds2" required><br>
+
+                <label for="stake">Total Stake ($):</label>
+                <input type="number" id="stake" step="0.01" required><br>
+
+                <button type="submit">Calculate</button>
+            </form>
+            <div id="result"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 LeagueLens. All rights reserved.</p>
+    </footer>
+</body>
+</html>

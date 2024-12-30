@@ -5,7 +5,12 @@ const fs = require('fs');
 async function getBarcelonaRoster() {
   try {
     const url = 'https://www.transfermarkt.com/fc-barcelona/startseite/verein/131';
-    const { data } = await axios.get(url);
+    const { data } = await axios.get(url, {
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+      },
+    });
     const $ = cheerio.load(data);
 
     const roster = [];
@@ -13,19 +18,19 @@ async function getBarcelonaRoster() {
     // Select each player row in the table
     $('.items > tbody > tr').each((index, element) => {
       const name = $(element).find('.hauptlink .hide-for-small').text().trim();
-      const position = $(element).find('td.zentriert:nth-child(2)').attr('title') || 'N/A';
+      const position = $(element).find('td:nth-child(5)').text().trim() || 'N/A'; // Adjusted column for position
       const age = $(element)
         .find('td.zentriert:nth-child(3)')
         .text()
-        .match(/\((\d+)\)/)?.[1] || 'N/A';
+        .match(/\((\d+)\)/)?.[1] || 'N/A'; // Extract age using regex
       const nationality = $(element).find('td.zentriert:nth-child(2) img').attr('title') || 'N/A';
       const marketValue = $(element).find('.rechts.hauptlink').text().trim() || 'N/A';
-    
+
+      // Add to roster array if name exists
       if (name) {
         roster.push({ name, position, age, nationality, marketValue });
       }
     });
-    
 
     // Save the roster to a JSON file
     saveRosterToFile(roster);

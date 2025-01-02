@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arbitrage Betting</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+        }
+
+        .navbar {
+            background-color: #333;
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .navbar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .navbar ul li {
+            margin: 0 15px;
+            padding: 10px 20px;
+            background-color: #444;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .navbar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .container {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 900px;
+            margin: 20px auto;
+        }
+
+        h1 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .arbitrage-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .arbitrage-form label {
+            font-size: 16px;
+        }
+
+        .arbitrage-form input {
+            padding: 10px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .arbitrage-form button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .arbitrage-form button:hover {
+            background-color: #0056b3;
+        }
+
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #333;
+            border-radius: 5px;
+        }
+
+        .results p {
+            font-size: 16px;
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="arbitrage_bets.html">Arbitrage Bets</a></li>
+            <li><a href="arbitrage_calculator.html">Arbitrage Calculator</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h1>Arbitrage Betting Calculator</h1>
+        <form class="arbitrage-form" id="arbitrageForm">
+            <label for="odds1">Enter Odds for Bet 1:</label>
+            <input type="number" id="odds1" name="odds1" step="0.01" placeholder="Decimal odds, e.g., 2.5" required>
+
+            <label for="odds2">Enter Odds for Bet 2:</label>
+            <input type="number" id="odds2" name="odds2" step="0.01" placeholder="Decimal odds, e.g., 3.0" required>
+
+            <label for="stake">Enter Total Stake:</label>
+            <input type="number" id="stake" name="stake" step="0.01" placeholder="Total amount to bet" required>
+
+            <button type="button" onclick="calculateArbitrage()">Calculate</button>
+        </form>
+
+        <div class="results" id="results">
+            <p>Enter values to calculate arbitrage opportunities.</p>
+        </div>
+    </div>
+
+    <script>
+        function calculateArbitrage() {
+            const odds1 = parseFloat(document.getElementById('odds1').value);
+            const odds2 = parseFloat(document.getElementById('odds2').value);
+            const stake = parseFloat(document.getElementById('stake').value);
+            const results = document.getElementById('results');
+
+            if (isNaN(odds1) || isNaN(odds2) || isNaN(stake)) {
+                results.innerHTML = '<p style="color: red;">Please enter valid numbers for all fields.</p>';
+                return;
+            }
+
+            // Calculate individual stakes
+            const stake1 = stake / (1 + (odds1 / odds2));
+            const stake2 = stake - stake1;
+
+            // Calculate potential profit
+            const profit1 = stake1 * odds1 - stake;
+            const profit2 = stake2 * odds2 - stake;
+
+            if (profit1 >= 0 && profit2 >= 0) {
+                results.innerHTML = `
+                    <p>Stake on Bet 1: <strong>$${stake1.toFixed(2)}</strong></p>
+                    <p>Stake on Bet 2: <strong>$${stake2.toFixed(2)}</strong></p>
+                    <p>Guaranteed Profit: <strong>$${Math.min(profit1, profit2).toFixed(2)}</strong></p>
+                `;
+            } else {
+                results.innerHTML = '<p style="color: red;">No arbitrage opportunity available with the entered odds.</p>';
+            }
+        }
+    </script>
+</body>
+</html>

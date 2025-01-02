@@ -82,6 +82,36 @@
             font-size: 14px;
         }
 
+        .follow-button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .follow-button:hover {
+            background-color: #218838;
+        }
+
+        .unfollow-button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .unfollow-button:hover {
+            background-color: #c82333;
+        }
+
         .calculate-button {
             margin-top: 20px;
             padding: 10px 20px;
@@ -111,19 +141,64 @@
     </div>
 
     <div class="container">
-        <h1>Arbitrage Betting Calculator</h1>
+        <h1>Arbitrage Plays</h1>
         <div id="arbitrage-container" class="arbitrage-data">
             <p>Fetching arbitrage opportunities...</p>
         </div>
     </div>
 
     <script>
+        function calculateArbitrage(homeOdds, awayOdds, stake) {
+            const homeStake = (stake / homeOdds).toFixed(2);
+            const awayStake = (stake / awayOdds).toFixed(2);
+            const totalInvestment = parseFloat(homeStake) + parseFloat(awayStake);
+            const guaranteedProfit = (stake - totalInvestment).toFixed(2);
+
+            return {
+                homeStake,
+                awayStake,
+                guaranteedProfit,
+                isArbitrage: totalInvestment < stake
+            };
+        }
+
+        function toggleFollowButton(button, match) {
+            if (button.classList.contains('follow-button')) {
+                button.textContent = 'Unfollow';
+                button.classList.remove('follow-button');
+                button.classList.add('unfollow-button');
+                addToProfile(match);
+            } else {
+                button.textContent = 'Follow';
+                button.classList.remove('unfollow-button');
+                button.classList.add('follow-button');
+                removeFromProfile(match);
+            }
+        }
+
+        function addToProfile(match) {
+            const profileContainer = document.getElementById('profile-container');
+            if (profileContainer) {
+                const listItem = document.createElement('li');
+                listItem.textContent = match;
+                listItem.id = `profile-item-${match}`;
+                profileContainer.appendChild(listItem);
+            }
+        }
+
+        function removeFromProfile(match) {
+            const listItem = document.getElementById(`profile-item-${match}`);
+            if (listItem) {
+                listItem.remove();
+            }
+        }
+
         async function fetchArbitrageOpportunities() {
             const arbitrageContainer = document.getElementById('arbitrage-container');
             arbitrageContainer.innerHTML = '<p>Loading...</p>';
 
             try {
-                const response = await fetch('/api/odds'); // Replace with the actual API endpoint
+                const response = await fetch('/api/odds');
                 if (!response.ok) {
                     throw new Error('Failed to fetch odds data');
                 }
@@ -152,31 +227,26 @@
                             return { home: homeOdds, away: awayOdds, title: bookmaker.title };
                         });
 
-                        const totalInverse = odds.reduce((acc, odd) => {
-                            return acc + (1 / odd.home) + (1 / odd.away);
-                        }, 0);
+                        const stake = 100; // Example stake
 
-                        if (totalInverse >= 1) {
+                        const bestHome = odds.reduce((prev, current) => (prev.home > current.home ? prev : current));
+                        const bestAway = odds.reduce((prev, current) => (prev.away > current.away ? prev : current));
+
+                        const arbitrage = calculateArbitrage(bestHome.home, bestAway.away, stake);
+
+                        if (!arbitrage.isArbitrage) {
                             return `<div class="arbitrage-card">
                                 <h2>${game.home_team} vs ${game.away_team}</h2>
                                 <p>No arbitrage opportunities here.</p>
                             </div>`;
                         }
 
-                        const stake = 100; // Example stake
-                        const investments = odds.map(odd => {
-                            return {
-                                bookmaker: odd.title,
-                                homeStake: (stake / odd.home).toFixed(2),
-                                awayStake: (stake / odd.away).toFixed(2)
-                            };
-                        });
-
                         return `<div class="arbitrage-card">
                             <h2>${game.home_team} vs ${game.away_team}</h2>
-                            ${investments.map(inv => {
-                                return `<p>${inv.bookmaker}: Bet $${inv.homeStake} on Home and $${inv.awayStake} on Away</p>`;
-                            }).join('')}
+                            <p>Home Stake: $${arbitrage.homeStake} (Bookmaker: ${bestHome.title})</p>
+                            <p>Away Stake: $${arbitrage.awayStake} (Bookmaker: ${bestAway.title})</p>
+                            <p>Guaranteed Profit: $${arbitrage.guaranteedProfit}</p>
+                            <button class="follow-button" onclick="toggleFollowButton(this, '${game.home_team} vs ${game.away_team}')">Follow</button>
                         </div>`;
                     })
                     .join('');

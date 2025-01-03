@@ -24,7 +24,7 @@
         }
 
         .navbar .logo {
-            width: 120px;  /* Adjust to your preferred width */
+            width: 90px;  
             height: auto;
         }
 
@@ -146,6 +146,12 @@
         .calculate-button:hover {
             background-color: #0056b3;
         }
+        .sportsbook-logo {
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
@@ -168,6 +174,18 @@
     </div>
 
     <script>
+         const imageMap = {
+            "FanDuel": "img/fanduel.png",
+            "DraftKings": "img/draftkings.png",
+            "BetMGM": "img/betMGM.png",
+            "Caesars": "img/caesars.png",
+            "PointsBet": "img/pointsbet.png",
+            "ESPNBet": "img/espnbet.png",
+            "BetRivers": "img/betrivers.png",
+            "LowVig.ag": "img/lowvig.png",
+            "BetOnline.ag": "img/betonlineag.png",
+        };
+
         function calculateArbitrage(homeOdds, awayOdds, stake) {
             const homeStake = (stake / homeOdds).toFixed(2);
             const awayStake = (stake / awayOdds).toFixed(2);
@@ -244,7 +262,8 @@
                         const odds = bookmakers.map(bookmaker => {
                             const homeOdds = bookmaker.markets[0]?.outcomes[0]?.price || 0;
                             const awayOdds = bookmaker.markets[0]?.outcomes[1]?.price || 0;
-                            return { home: homeOdds, away: awayOdds, title: bookmaker.title };
+                            const logo = imageMap[bookmaker.title] || "img/barcelona.jpg";
+                            return { home: homeOdds, away: awayOdds, title: bookmaker.title, logo };
                         });
 
                         const stake = 100; // Example stake
@@ -263,8 +282,14 @@
 
                         return `<div class="arbitrage-card">
                             <h2>${game.home_team} vs ${game.away_team}</h2>
-                            <p>Home Stake: $${arbitrage.homeStake} (Bookmaker: ${bestHome.title})</p>
-                            <p>Away Stake: $${arbitrage.awayStake} (Bookmaker: ${bestAway.title})</p>
+                            <p>
+                                Home Stake: $${arbitrage.homeStake} (Bookmaker: ${bestHome.title})
+                                <img src="${bestHome.logo}" alt="${bestHome.title} Logo" class="sportsbook-logo">
+                            </p>
+                            <p>  
+                                Away Stake: $${arbitrage.awayStake} (Bookmaker: ${bestAway.title})
+                                <img src="${bestAway.logo}" alt="${bestAway.title} Logo" class="sportsbook-logo">
+                            </p>
                             <p>Guaranteed Profit: $${arbitrage.guaranteedProfit}</p>
                             <button class="follow-button" onclick="toggleFollowButton(this, '${game.home_team} vs ${game.away_team}')">Follow</button>
                         </div>`;

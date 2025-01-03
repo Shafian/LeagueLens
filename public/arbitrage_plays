@@ -23,6 +23,10 @@
             color: #FFFFFF;
         }
 
+        .navbar .logo {
+            width: 120px;  /* Adjust to your preferred width */
+            height: auto;
+        }
 
         .navbar h1 {
             margin: 0;
@@ -146,7 +150,7 @@
 </head>
 <body>
     <div class="navbar">
-        <h1>Sports Betting</h1>
+        <h1><img src="img/LeagueLens.png" alt="LeagueLens" class="logo"></h1>
         <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="profile.html">Profile</a></li>

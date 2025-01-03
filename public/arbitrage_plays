@@ -6,25 +6,29 @@
     <title>Arbitrage Plays</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
+            background-color: #a4c9df;
+            color: #2B2D42;
         }
 
+
         .navbar {
-            background-color: #007bff;
-            padding: 10px;
+            background-color: #003366;
+            padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: white;
+            color: #FFFFFF;
         }
+
 
         .navbar h1 {
             margin: 0;
-            font-size: 20px;
+            font-size: 24px;
         }
+
 
         .navbar ul {
             list-style: none;
@@ -33,21 +37,26 @@
             display: flex;
         }
 
+
         .navbar ul li {
-            margin: 0 10px;
+            margin: 0 15px;
         }
 
+
         .navbar ul li a {
-            color: white;
+            color: #ffffff;
             text-decoration: none;
+            font-weight: bold;
         }
+
 
         .navbar ul li a:hover {
             text-decoration: underline;
         }
 
+
         .container {
-            background-color: white;
+            background-color: #1d3a6d;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -55,32 +64,39 @@
             max-width: 900px;
             margin: 20px auto;
             text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
+
         h1 {
-            color: #007bff;
+            color: #ffffff;
             margin-bottom: 20px;
         }
 
+
         .arbitrage-card {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
+            background-color: #d6e4f5;
+            border: 1px solid #DDD;
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 15px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
+
         .arbitrage-card h2 {
             margin: 0;
             font-size: 18px;
-            color: #333;
+            color: #001b27;
         }
+
 
         .arbitrage-card p {
             margin: 5px 0;
             font-size: 14px;
+            color: #273941;
         }
+
 
         .follow-button {
             margin-top: 10px;

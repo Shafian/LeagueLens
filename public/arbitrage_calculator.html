@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Arbitrage Betting</title>
     <link rel="stylesheet" href="css/styles.css">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,6 +15,28 @@
             padding: 0;
             background-color: #f4f4f9;
             color: #333;
+        }
+        
+        /* Styling for the toggle button section */
+        .toggle-button {
+            display: flex;
+            justify-content: center;
+            margin: 20px auto;
+        }
+
+        .toggle-button button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .toggle-button button:hover {
+            background-color: #0056b3;
         }
         .site-header {
             background-color: #007bff;
@@ -55,7 +78,7 @@
             margin: 30px auto;
             padding: 20px;
             background: white;
-            border-radius: 15px;
+            border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         h2 {
@@ -135,32 +158,82 @@
             color: white;
         }
     </style>
+
     <script>
+        // Global variable to track whether odds are in American format
+        let isAmericanOdds = true;
+
+        // Function to toggle between American and Decimal odds input
+        function toggleOddsInput() {
+            
+            // Toggle the state of isAmericanOdds
+            isAmericanOdds = !isAmericanOdds;
+            localStorage.setItem('isAmericanOdds', isAmericanOdds);
+
+            // Get references to the labels and inputs
+            const oddsLabel1 = document.getElementById('odds1-label');
+            const oddsLabel2 = document.getElementById('odds2-label');
+            const oddsInput1 = document.getElementById('odds1');
+            const oddsInput2 = document.getElementById('odds2');
+
+            // Update labels and placeholders based on the current state
+            if (isAmericanOdds) {
+                oddsLabel1.textContent = 'Odds for Outcome 1 (American):';
+                oddsLabel2.textContent = 'Odds for Outcome 2 (American):';
+                oddsInput1.placeholder = '+200';
+                oddsInput2.placeholder = '-150';
+            } else {
+                oddsLabel1.textContent = 'Odds for Outcome 1 (Decimal):';
+                oddsLabel2.textContent = 'Odds for Outcome 2 (Decimal):';
+                oddsInput1.placeholder = '1.5';
+                oddsInput2.placeholder = '2.3';
+            }
+            // Update the button text dynamically
+            document.getElementById('toggle-label').textContent = isAmericanOdds ? 'Decimal Odds' : 'American Odds';
+        }
+        // Restore the toggle state on page load
+        window.onload = () => {
+                    const savedState = localStorage.getItem('isAmericanOdds');
+                    if (savedState !== null) {
+                        isAmericanOdds = savedState === 'true';
+                        toggleOddsInput(); // Initialize to saved state
+            }
+        };
+        
+        // Function to calculate arbitrage opportunity
         function calculateArbitrage() {
+            // Get values from the input fields
             const odds1 = document.getElementById('odds1').value.trim();
             const odds2 = document.getElementById('odds2').value.trim();
             const stake = parseFloat(document.getElementById('stake').value);
 
+            // Validate input fields
             if (!odds1 || !odds2 || isNaN(stake) || stake <= 0) {
                 alert('Please enter valid numbers for all fields.');
                 return;
             }
 
-            // Convert American odds to decimal odds
+            // Function to convert American odds to Decimal odds (check)
             const convertOddsToDecimal = (odds) => {
                 if (odds.startsWith('+')) {
                     return 1 + parseFloat(odds) / 100;
                 } else if (odds.startsWith('-')) {
                     return 1 + 100 / Math.abs(parseFloat(odds));
                 } else {
-                    alert('Invalid odds format. Please use American odds (+/-).');
-                    throw new Error('Invalid odds format.');
+                    return parseFloat(odds); // Assume already decimal
                 }
             };
 
             try {
-                const decimalOdds1 = convertOddsToDecimal(odds1);
-                const decimalOdds2 = convertOddsToDecimal(odds2);
+                // Convert odds based on the current input format
+                const decimalOdds1 = isAmericanOdds ? convertOddsToDecimal(odds1) : parseFloat(odds1);
+                const decimalOdds2 = isAmericanOdds ? convertOddsToDecimal(odds2) : parseFloat(odds2);
+
+                // Validate converted odds
+                if (isNaN(decimalOdds1) || isNaN(decimalOdds2) || decimalOdds1 <= 0 || decimalOdds2 <= 0) {
+                    alert('Please enter valid odds in the correct format.');
+                    return;
+                }
 
                 // Calculate implied probabilities
                 const impliedProb1 = 1 / decimalOdds1;
@@ -175,8 +248,8 @@
                 }
 
                 // Calculate stakes and profit
-                const stake1 = (stake * impliedProb2) / totalImpliedProb;
-                const stake2 = (stake * impliedProb1) / totalImpliedProb;
+                const stake2 = (stake * impliedProb2) / totalImpliedProb;
+                const stake1 = (stake * impliedProb1) / totalImpliedProb;
                 const profit = (stake / totalImpliedProb) - stake;
 
                 // Display results
@@ -203,6 +276,7 @@
     </script>
 </head>
 <body>
+
     <header class="site-header">
         <h1>Arbitrage Betting</h1>
         <nav>
@@ -218,6 +292,13 @@
             </ul>
         </nav>
     </header>
+   
+    <!-- Button to toggle between American and Decimal odds -->
+    <div class="toggle-button">
+        <button onclick="toggleOddsInput()">
+            Switch to <span id="toggle-label">Decimal Odds</span>
+        </button>
+    </div>
 
     <main>
         <section>
@@ -247,15 +328,19 @@
         <section>
             <h2>Arbitrage Betting Calculator</h2>
             <form onsubmit="event.preventDefault(); calculateArbitrage();">
-                <label for="odds1">Odds for Outcome 1:</label>
-                <input type="text" id="odds1" required><br>
+                <!-- Input for Outcome 1 odds -->
+                <label id="odds1-label" for="odds1">Odds for Outcome 1 (American):</label>
+                <input type="text" id="odds1" placeholder="+200" required><br>
 
-                <label for="odds2">Odds for Outcome 2:</label>
-                <input type="text" id="odds2" required><br>
+                <!-- Input for Outcome 2 odds -->
+                <label id="odds2-label" for="odds2">Odds for Outcome 2 (American):</label>
+                <input type="text" id="odds2" placeholder="-150" required><br>
 
+                <!-- Input for total stake -->
                 <label for="stake">Total Stake ($):</label>
                 <input type="number" id="stake" step="0.01" required><br>
 
+                <!-- Button to trigger calculation -->
                 <button type="submit">Calculate</button>
             </form>
             <div id="result"></div>
@@ -263,7 +348,8 @@
     </main>
 
     <footer>
-        <p>&copy; 2024 LeagueLens. All rights reserved.</p>
+        <p>&copy; 2024 LeagueLens. LLC. All rights reserved.</p>
     </footer>
+
 </body>
 </html>

@@ -46,13 +46,34 @@
             text-decoration: underline;
         }
 
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
         .profile-picture {
-            width: 40px;
-            height: 40px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             overflow: hidden;
-            margin-left: 10px;
-            cursor: pointer;
+            margin: 0 auto 20px;
+            border: 3px solid #007bff;
         }
 
         .profile-picture img {
@@ -61,117 +82,183 @@
             object-fit: cover;
         }
 
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 90%;
-            max-width: 600px;
-            margin: 20px auto;
+        .profile-info {
             text-align: center;
         }
 
-        h1 {
-            color: #007bff;
+        .profile-info h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .profile-info p {
+            color: #555;
             margin-bottom: 20px;
         }
 
-        .profile-section {
-            margin-bottom: 20px;
-        }
-
-        .profile-section input[type="file"] {
-            margin-top: 10px;
-        }
-
-        .goal-section {
-            margin-bottom: 20px;
-        }
-
-        .goal-section input {
-            width: 80%;
-            padding: 10px;
-            margin-top: 10px;
+        .profile-goal {
+            background-color: #f9f9f9;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
         }
 
-        .save-button {
-            padding: 10px 20px;
+        .profile-goal h3 {
+            margin: 0 0 10px;
+            color: #333;
+        }
+
+        .profile-goal p {
+            margin: 0;
+            color: #007bff;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            background-color: #e9f7ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .stats-item {
+            text-align: center;
+        }
+
+        .stats-item h3 {
+            margin: 0;
+            color: #007bff;
+            font-size: 24px;
+        }
+
+        .stats-item p {
+            margin: 5px 0 0;
+            color: #333;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
             background-color: #007bff;
             color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
+            margin-top: 20px;
         }
 
-        .save-button:hover {
+        .btn-edit {
+            display: block;
+            margin: 20px auto 0;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-edit:hover {
             background-color: #0056b3;
         }
     </style>
+    <script type="module">
+        import { db } from './firebase.js';
+        import { getDoc, doc } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js';
+
+        async function loadProfileData() {
+            try {
+                const userId = localStorage.getItem('userId'); // Retrieve user ID from localStorage
+                if (!userId) {
+                    alert('User not logged in. Redirecting to login page.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                const userDocRef = doc(db, 'users', userId);
+                const userDoc = await getDoc(userDocRef);
+
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+
+                    document.getElementById('profile-name').textContent = userData.name;
+                    document.getElementById('profile-bio').textContent = userData.bio;
+                    document.getElementById('profile-goal').textContent = `$${userData.goal}`;
+                    document.getElementById('profile-picture-display').src = userData.photoURL || 'default-avatar.png';
+                    document.getElementById('total-wins').textContent = userData.totalWins || 0;
+                    document.getElementById('total-bets').textContent = userData.totalBets || 0;
+                    document.getElementById('success-rate').textContent = userData.successRate || 'N/A';
+                } else {
+                    alert('User data not found. Redirecting to login page.');
+                    window.location.href = 'index.html';
+                }
+            } catch (error) {
+                console.error('Error loading profile data:', error);
+                alert('An error occurred while loading the profile. Please try again later.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadProfileData);
+    </script>
 </head>
 <body>
     <div class="navbar">
         <h1>Sports Betting</h1>
         <ul>
-            <li><a href="index.html">Home</a></li>
+            <li><a href="home.html">Home</a></li>
             <li><a href="profile.html">Profile</a></li>
-            <li><a href="odds.html">Odds</a></li>
-            <li><a href="arbitrage.html">Arbitrage</a></li>
-            <li><a href="arbitrage_plays">Arbitrage Plays</a></li>
-            <li><a href="calculator.html">Calculator</a></li>
+        <li><a href="soccer.html">Soccer</a></li>
+        <li><a href="arbitrage_betting.html">Arbitrage Betting</a></li>
+        <li><a href="arbitrage_calculator.html">Arbitrage Calculator</a></li>
+        <li><a href="odds.html">Odds Data</a></li>
+        <li><a href="arbitrage_plays">Arbitrage Plays</a></li>
+        <li><a href="Profit_Calendar.html">Profit Calendar</a></li>
+        <li><a href="Expected_Value_Calculator.html">Expected Value Calculator</a></li>
         </ul>
-        <div class="profile-picture" id="navbar-profile-picture" style="display: none;" onclick="redirectToProfile()"></div>
     </div>
 
-    <div class="container" id="profile-container">
-        <h1>Profile Page</h1>
-
-        <div class="profile-section">
-            <h2>Upload Profile Picture</h2>
-            <input type="file" id="profile-picture" accept="image/*">
+    <div class="container">
+        <div class="profile-header">
+            <div class="profile-picture">
+                <img src="default-avatar.png" alt="Profile Picture" id="profile-picture-display">
+            </div>
+            <h1 id="profile-name">John Doe</h1>
         </div>
 
-        <div class="goal-section">
-            <h2>Set Your Betting Goal</h2>
-            <input type="number" id="betting-goal" placeholder="Enter your goal amount">
+        <div class="profile-info">
+            <h2>About Me</h2>
+            <p id="profile-bio">This is a sample bio about the user. It can be edited during sign-up.</p>
         </div>
 
-        <button class="save-button" onclick="saveProfile()">Save Profile</button>
+        <div class="profile-goal">
+            <h3>Betting Goal</h3>
+            <p id="profile-goal">$1000</p>
+        </div>
+
+        <div class="profile-stats">
+            <div class="stats-item">
+                <h3 id="total-wins">0</h3>
+                <p>Total Wins</p>
+            </div>
+            <div class="stats-item">
+                <h3 id="total-bets">0</h3>
+                <p>Total Bets</p>
+            </div>
+            <div class="stats-item">
+                <h3 id="success-rate">N/A</h3>
+                <p>Success Rate</p>
+            </div>
+        </div>
+
+        <button class="btn-edit">Edit Profile</button>
     </div>
 
-    <script>
-        function saveProfile() {
-            const profilePictureInput = document.getElementById('profile-picture');
-            const profilePicture = profilePictureInput.files[0];
-            const bettingGoal = document.getElementById('betting-goal').value;
-
-            if (!profilePicture) {
-                alert('Please upload a profile picture.');
-                return;
-            }
-
-            if (!bettingGoal) {
-                alert('Please enter a betting goal.');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const navbarProfilePicture = document.getElementById('navbar-profile-picture');
-                navbarProfilePicture.innerHTML = `<img src="${e.target.result}" alt="Profile Picture">`;
-                navbarProfilePicture.style.display = 'block';
-            };
-            reader.readAsDataURL(profilePicture);
-
-            document.getElementById('profile-container').innerHTML = `<h2>Profile Saved!</h2>`;
-        }
-
-        function redirectToProfile() {
-            window.location.href = "profile.html";
-        }
-    </script>
+    <footer>
+        <p>&copy; 2024 Sports Central. All rights reserved.</p>
+    </footer>
 </body>
 </html>

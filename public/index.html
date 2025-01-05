@@ -38,8 +38,8 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 500px; /* Increased max-width */
-            padding: 30px; /* Increased padding */
+            max-width: 500px;
+            padding: 30px;
         }
 
         .form-section h2 {
@@ -101,24 +101,54 @@
             text-decoration: underline;
         }
     </style>
-    <script>
-        function validateLogin(event) {
-            event.preventDefault(); // Prevent form submission
+    <script type="module">
+        import { auth, db } from './firebase.js';
+        import { getDocs, collection, query, where } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js';
 
-            const username = document.getElementById('username').value;
+        async function handleSignIn(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
 
-            // Predefined credentials
-            const validUsername = 'Admin1';
-            const validPassword = '1';
+            if (!username || !password) {
+                alert('Please enter both username and password.');
+                return;
+            }
 
-            if (username === validUsername && password === validPassword) {
-                // Redirect to home.html
-                window.location.href = 'home.html';
-            } else {
-                alert('Invalid username or password. Please try again.');
+            try {
+                // Query Firestore for the user by username and password
+                const userQuery = query(
+                    collection(db, 'users'),
+                    where('username', '==', username),
+                    where('password', '==', password)
+                );
+                const querySnapshot = await getDocs(userQuery);
+
+                if (querySnapshot.empty) {
+                    alert('Invalid username or password.');
+                    return;
+                }
+
+                // Extract user data
+                const userDoc = querySnapshot.docs[0];
+                const userData = userDoc.data();
+
+                // Store user data locally
+                localStorage.setItem('userId', userDoc.id);
+                localStorage.setItem('profileName', userData.name);
+                localStorage.setItem('profileBio', userData.bio);
+                localStorage.setItem('profileGoal', `$${userData.goal}`);
+
+                alert(`Welcome back, ${userData.name}!`);
+                window.location.href = 'profile.html';
+            } catch (error) {
+                console.error('Error during sign-in:', error);
+                alert(`Error: ${error.message}`);
             }
         }
+
+        window.handleSignIn = handleSignIn;
     </script>
 </head>
 <body>
@@ -129,7 +159,7 @@
         <div class="wrapper">
             <div class="form-section">
                 <h2>Sign In</h2>
-                <form onsubmit="validateLogin(event);">
+                <form onsubmit="handleSignIn(event);">
                     <div class="form-group">
                         <label for="username">Username</label>
                         <input type="text" id="username" name="username" placeholder="Enter your username" required>

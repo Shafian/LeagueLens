@@ -120,12 +120,45 @@
             margin-bottom: 10px;
         }
 
-        .filter-section select {
+        .filter-section .dropdown {
+            position: relative;
+        }
+
+        .filter-section .dropdown-button {
             padding: 5px;
             border: none;
             border-radius: 3px;
+            background-color: #ffa500;
+            color: #000;
+            cursor: pointer;
         }
-        
+
+        .filter-section .dropdown-button:hover {
+            background-color: #cc8400;
+        }
+
+        .filter-section .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #003366;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            z-index: 1;
+        }
+
+        .filter-section .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .filter-section .dropdown-content label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .filter-section .dropdown-content input {
+            margin-right: 5px;
+        }
+
         .follow-button {
             margin-top: 10px;
             padding: 8px 16px;
@@ -171,21 +204,6 @@
             background-color: #0056b3;
         }
 
-        .refresh-button {
-            margin: 10px 0;
-            padding: 8px 16px;
-            background-color: #ffa500;
-            color: #000;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .refresh-button:hover {
-            background-color: #cc8400;
-        }
-
         .sportsbook-logo {
             width: 20px;
             height: 20px;
@@ -217,7 +235,19 @@
                 <option value="all">All</option>
                 <option value="nba">NBA</option>
                 <option value="soccer">Soccer</option>
-            </select>  
+            </select>
+            
+            <div class="dropdown">
+                <button class="dropdown-button">Filter by Sportsbooks</button>
+                <div class="dropdown-content" id="sportsbook-filters">
+                    <label><input type="checkbox" value="FanDuel"> FanDuel</label>
+                    <label><input type="checkbox" value="DraftKings"> DraftKings</label>
+                    <label><input type="checkbox" value="BetMGM"> BetMGM</label>
+                    <label><input type="checkbox" value="BetRivers"> BetRivers</label>
+                    <label><input type="checkbox" value="BetOnline.ag"> BetOnline.ag</label>
+                </div>
+            </div>
+
             <button class="refresh-button" onclick="window.fetchArbitrageOpportunities()">Refresh Data</button>
         </div> 
 
@@ -226,7 +256,7 @@
                 <tr>
                     <th>ARB %</th>
                     <th>Event</th>
-                    <th>Market</th> <!-- Add Market column -->
+                    <th>Market</th>
                     <th>Books</th>
                     <th>Odds</th>
                     <th>Bet Size</th>
@@ -279,6 +309,23 @@
                 totalARB
             };
         }
+
+        window.filterBySportsbooks = function() {
+            const selectedBooks = Array.from(document.querySelectorAll('#sportsbook-filters input:checked')).map(input => input.value.toLowerCase());
+            const rows = document.querySelectorAll("#arbitrage-table-body tr");
+            rows.forEach(row => {
+                const bookCell = row.querySelector("td:nth-child(4)").textContent.toLowerCase();
+                if (selectedBooks.length === 0 || selectedBooks.some(book => bookCell.includes(book))) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        };
+
+        document.querySelectorAll('#sportsbook-filters input').forEach(input => {
+            input.addEventListener('change', window.filterBySportsbooks);
+        });
 
         window.handleFollow = async function(match) {
             try {

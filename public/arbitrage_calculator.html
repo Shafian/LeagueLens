@@ -17,7 +17,7 @@
             color: #333;
         }
         
-        /* Toggle switch styling */
+        /* Styling for the toggle switch */
         .switch {
             position: relative;
             display: inline-block;
@@ -61,7 +61,7 @@
         }
 
         input:checked + .slider:before {
-            transform: translateX(26px);        
+            transform: translateX(26px);
         }
 
         .site-header {
@@ -187,143 +187,149 @@
 
     <script>
         // Global variable to track whether odds are in American format
-        let isAmericanOdds = true;
+        let isAmericanOdds = true; // Default to Decimal Odds
 
         // Function to toggle between American and Decimal odds input
         function toggleOddsInput() {
-            
-            // Toggle the state of isAmericanOdds
-            isAmericanOdds = !isAmericanOdds;
+            // Get the checkbox state
+            const isChecked = document.getElementById('odds-toggle').checked;
+
+            // Update the global variable
+            isAmericanOdds = !isChecked; // If checked, use Decimal odds; if unchecked, use American odds
             localStorage.setItem('isAmericanOdds', isAmericanOdds);
 
-            // Get references to the labels and inputs
-            const oddsLabel1 = document.getElementById('odds1-label');
-            const oddsLabel2 = document.getElementById('odds2-label');
-            const oddsInput1 = document.getElementById('odds1');
-            const oddsInput2 = document.getElementById('odds2');
+            // Show the correct calculator based on the odds format
+            const americanCalculator = document.getElementById('american-calculator');
+            const decimalCalculator = document.getElementById('decimal-calculator');
 
-            // Update labels and placeholders based on the current state
             if (isAmericanOdds) {
-                oddsLabel1.textContent = 'Odds for Outcome 1 (American):';
-                oddsLabel2.textContent = 'Odds for Outcome 2 (American):';
-                oddsInput1.placeholder = '+200';
-                oddsInput2.placeholder = '-150';
+                americanCalculator.style.display = 'block';
+                decimalCalculator.style.display = 'none';
+                document.getElementById('toggle-label').textContent = 'American Odds';
             } else {
-                oddsLabel1.textContent = 'Odds for Outcome 1 (Decimal):';
-                oddsLabel2.textContent = 'Odds for Outcome 2 (Decimal):';
-                oddsInput1.placeholder = '1.5';
-                oddsInput2.placeholder = '2.3';
+                americanCalculator.style.display = 'none';
+                decimalCalculator.style.display = 'block';
+                document.getElementById('toggle-label').textContent = 'Decimal Odds';
             }
-            // Update the button text dynamically
-            document.getElementById('toggle-label').textContent = isAmericanOdds ? 'Decimal Odds' : 'American Odds';
         }
-        
+
         // Restore the toggle state on page load
         window.onload = () => {
-                    const savedState = localStorage.getItem('isAmericanOdds');
-                    if (savedState !== null) {
-                        isAmericanOdds = savedState === 'true';
-                        toggleOddsInput(); // Initialize to saved state
+            const savedState = localStorage.getItem('isAmericanOdds');
+            if (savedState !== null) {
+                isAmericanOdds = savedState === 'false';
+                document.getElementById('odds-toggle').checked = !isAmericanOdds; // Reflect saved state
+            } else {
+                // Default to Decimal odds
+                isAmericanOdds = true;
+                localStorage.setItem('isAmericanOdds', isAmericanOdds);
             }
+            toggleOddsInput(); // Initialize the UI with the correct state
         };
-        
-        // Function to calculate arbitrage opportunity
-        function calculateArbitrage() {
-            // Get values from the input fields
-            const odds1 = document.getElementById('odds1').value.trim();
-            const odds2 = document.getElementById('odds2').value.trim();
-            const stake = parseFloat(document.getElementById('stake').value);
 
-            // Validate input fields
-            if (!odds1 || !odds2 || isNaN(stake) || stake <= 0) {
-                alert('Please enter valid numbers for all fields.');
+        // Function to calculate arbitrage for Decimal odds
+        function calculateDecimalArbitrage() {
+            const odds1 = parseFloat(document.getElementById('decimal-odds1').value.trim());
+            const odds2 = parseFloat(document.getElementById('decimal-odds2').value.trim());
+            const stake = parseFloat(document.getElementById('decimal-stake').value);
+
+            if (isNaN(odds1) || isNaN(odds2) || isNaN(stake) || odds1 <= 0 || odds2 <= 0 || stake <= 0) {
+                alert('Please enter valid decimal odds and stake.');
                 return;
             }
 
-            // Function to convert American odds to Decimal odds (check)
+            const impliedProb1 = 1 / odds1;
+            const impliedProb2 = 1 / odds2;
+            const totalImpliedProb = impliedProb1 + impliedProb2;
+
+            if (totalImpliedProb >= 1) {
+                document.getElementById('decimal-result').innerText = 'This is not an arbitrage opportunity. Total implied probability exceeds 100%.';
+                return;
+            }
+
+            const stake1 = (stake * impliedProb1) / totalImpliedProb;
+            const stake2 = (stake * impliedProb2) / totalImpliedProb;
+            const profit = (stake / totalImpliedProb) - stake;
+
+            document.getElementById('decimal-result').innerHTML = `
+                <strong>Stake on Outcome 1:</strong> $${stake1.toFixed(2)} <br>
+                <strong>Stake on Outcome 2:</strong> $${stake2.toFixed(2)} <br>
+                <strong>Guaranteed Profit:</strong> $${profit.toFixed(2)}
+            `;
+        }
+
+        // Function to calculate arbitrage for American odds
+        function calculateAmericanArbitrage() {
+            const odds1 = document.getElementById('american-odds1').value.trim();
+            const odds2 = document.getElementById('american-odds2').value.trim();
+            const stake = parseFloat(document.getElementById('american-stake').value);
+
             const convertOddsToDecimal = (odds) => {
                 if (odds.startsWith('+')) {
                     return 1 + parseFloat(odds) / 100;
                 } else if (odds.startsWith('-')) {
                     return 1 + 100 / Math.abs(parseFloat(odds));
                 } else {
-                    return parseFloat(odds); // Assume already decimal
+                    alert('Please enter valid American odds starting with + or -.');
+                    throw new Error('Invalid American odds format.');
                 }
             };
 
             try {
-                // Convert odds based on the current input format
-                const decimalOdds2 = isAmericanOdds ? convertOddsToDecimal(odds1) : parseFloat(odds1);
-                const decimalOdds1 = isAmericanOdds ? convertOddsToDecimal(odds2) : parseFloat(odds2);
+                const decimalOdds1 = convertOddsToDecimal(odds1);
+                const decimalOdds2 = convertOddsToDecimal(odds2);
 
-                // Validate converted odds
-                if (isNaN(decimalOdds1) || isNaN(decimalOdds2) || decimalOdds1 <= 0 || decimalOdds2 <= 0) {
-                    alert('Please enter valid odds in the correct format.');
+                if (isNaN(decimalOdds1) || isNaN(decimalOdds2) || isNaN(stake) || stake <= 0) {
+                    alert('Please enter valid odds and stake.');
                     return;
                 }
 
-                // Calculate implied probabilities
                 const impliedProb1 = 1 / decimalOdds1;
                 const impliedProb2 = 1 / decimalOdds2;
                 const totalImpliedProb = impliedProb1 + impliedProb2;
 
-                // Check if it's an arbitrage opportunity
                 if (totalImpliedProb >= 1) {
-                    document.getElementById('result').innerText = 
-                        'This is not an arbitrage opportunity. Total implied probability exceeds 100%.';
+                    document.getElementById('american-result').innerText = 'This is not an arbitrage opportunity. Total implied probability exceeds 100%.';
                     return;
                 }
 
-                // Calculate stakes and profit
-                const stake2 = (stake * impliedProb2) / totalImpliedProb;
                 const stake1 = (stake * impliedProb1) / totalImpliedProb;
+                const stake2 = (stake * impliedProb2) / totalImpliedProb;
                 const profit = (stake / totalImpliedProb) - stake;
 
-                // Display results
-                document.getElementById('result').innerHTML = `
+                document.getElementById('american-result').innerHTML = `
                     <strong>Stake on Outcome 1:</strong> $${stake1.toFixed(2)} <br>
                     <strong>Stake on Outcome 2:</strong> $${stake2.toFixed(2)} <br>
                     <strong>Guaranteed Profit:</strong> $${profit.toFixed(2)}
-                    <div class="action-buttons">
-                        <button onclick="saveBet('${odds1}', '${odds2}')">Following</button>
-                        <button onclick="alert('Not Following')">Not Following</button>
-                    </div>
                 `;
             } catch (error) {
-                console.error('Error calculating arbitrage:', error);
+                console.error('Error calculating American arbitrage:', error);
             }
-        }
-
-        function saveBet(odds1, odds2) {
-            const bets = JSON.parse(localStorage.getItem('bets')) || [];
-            bets.push({ odds1, odds2 });
-            localStorage.setItem('bets', JSON.stringify(bets));
-            alert('Bet saved successfully! Go to the Profit Calendar to view.');
         }
     </script>
 </head>
-
 <body>
 
     <header class="site-header">
         <h1>Arbitrage Betting</h1>
         <nav>
             <ul>
-                <li><a href="./Profile/home.html">Home</a></li>
-                <li><a href="./Profile/profile.html">Profile</a></li>
-            <li><a href="arbitrage_betting.html">Arbitrage Betting</a></li>
-            <li><a href="arbitrage_calculator.html">Arbitrage Calculator</a></li>
-            <li><a href="odds.html">Odds Data</a></li>
-            <li><a href="arbitrage_plays">Arbitrage Plays</a></li>
-            <li><a href="Profit_Calendar.html">Profit Calendar</a></li>
-            <li><a href="Expected_Value_Calculator.html">Expected Value Calculator</a></li>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="soccer.html">Soccer</a></li>
+                <li><a href="arbitrage_betting.html">Arbitrage Betting</a></li>
+                <li><a href="arbitrage_calculator.html">Arbitrage Calculator</a></li>
+                <li><a href="odds.html">Odds Data</a></li>
+                <li><a href="arbitrage_plays">Arbitrage Plays</a></li>
+                <li><a href="Profit_Calendar.html">Profit Calendar</a></li>
+                <li><a href="Expected_Value_Calculator.html">Expected Value Calculator</a></li>
             </ul>
         </nav>
     </header>
-   
+
 
     <main>
-        <section>
+      <section>
             <h2>What is Arbitrage Betting</h2>
             <p>Arbitrage betting is a strategy that allows you to place bets on all possible outcomes of an event using different bookmakers to guarantee a profit, regardless of the result. This method exploits differences in odds offered by various betting platforms.</p>
         </section>
@@ -349,35 +355,47 @@
 
         <section>
             <h2>Arbitrage Betting Calculator</h2>
-               
-            <!-- Button to toggle between American and Decimal odds -->
-            <div class="toggle-button">
+        <div class="toggle-button">
                 <label class="switch">
                     <input type="checkbox" id="odds-toggle" onchange="toggleOddsInput()">
                     <span class="slider"></span>
                 </label>
                 <span id="toggle-label">Decimal Odds</span>
-            </div>
+        </div>
+        
+        <div id="decimal-calculator" style="display: block;">
+            <h2>Decimal Odds Calculator</h2>
+            <form onsubmit="event.preventDefault(); calculateDecimalArbitrage();">
+                <label for="decimal-odds1">Odds for Outcome 1 (Decimal):</label>
+                <input type="text" id="decimal-odds1" placeholder="1.5" required><br>
 
+                <label for="decimal-odds2">Odds for Outcome 2 (Decimal):</label>
+                <input type="text" id="decimal-odds2" placeholder="2.3" required><br>
 
-            <form onsubmit="event.preventDefault(); calculateArbitrage();">
-                <!-- Input for Outcome 1 odds -->
-                <label id="odds1-label" for="odds1">Odds for Outcome 1 (American):</label>
-                <input type="text" id="odds1" placeholder="+200" required><br>
+                <label for="decimal-stake">Total Stake ($):</label>
+                <input type="number" id="decimal-stake" step="0.01" required><br>
 
-                <!-- Input for Outcome 2 odds -->
-                <label id="odds2-label" for="odds2">Odds for Outcome 2 (American):</label>
-                <input type="text" id="odds2" placeholder="-150" required><br>
-
-                <!-- Input for total stake -->
-                <label for="stake">Total Stake ($):</label>
-                <input type="number" id="stake" step="0.01" required><br>
-
-                <!-- Button to trigger calculation -->
                 <button type="submit">Calculate</button>
             </form>
-            <div id="result"></div>
-        </section>
+            <div id="decimal-result"></div>
+        </div>
+
+        <div id="american-calculator" style="display: none;">
+            <h2>American Odds Calculator</h2>
+            <form onsubmit="event.preventDefault(); calculateAmericanArbitrage();">
+                <label for="american-odds1">Odds for Outcome 1 (American):</label>
+                <input type="text" id="american-odds1" placeholder="+200" required><br>
+
+                <label for="american-odds2">Odds for Outcome 2 (American):</label>
+                <input type="text" id="american-odds2" placeholder="-150" required><br>
+
+                <label for="american-stake">Total Stake ($):</label>
+                <input type="number" id="american-stake" step="0.01" required><br>
+
+                <button type="submit">Calculate</button>
+            </form>
+            <div id="american-result"></div>
+        </div>
     </main>
 
     <footer>

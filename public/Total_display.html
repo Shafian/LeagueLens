@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odds Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #444;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        button {
+            display: block;
+            margin: 0 auto 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Odds Data Viewer</h1>
+    <button id="fetchData">Fetch Odds Data</button>
+    <table id="oddsTable">
+        <thead>
+            <tr>
+                <th>Match</th>
+                <th>Home Team</th>
+                <th>Away Team</th>
+                <th>Total Over</th>
+                <th>Total Under</th>
+                <th>Goals Over/Under</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be inserted here dynamically -->
+        </tbody>
+    </table>
+
+    <script>
+        document.getElementById('fetchData').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/odds?sport=soccer_epl&market=totals');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+
+                const data = await response.json();
+                console.log('Fetched data:', data); // Debugging: Log fetched data
+                const tableBody = document.getElementById('oddsTable').querySelector('tbody');
+                tableBody.innerHTML = '';
+
+                data.forEach(match => {
+                    const odds = match.bookmakers?.[0]?.markets?.find(m => m.key === 'totals');
+                    if (odds) {
+                        odds.outcomes.forEach(outcome => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${match.event}</td>
+                                <td>${match.home_team}</td>
+                                <td>${match.away_team}</td>
+                                <td>${outcome.name === 'Over' ? outcome.price : ''}</td>
+                                <td>${outcome.name === 'Under' ? outcome.price : ''}</td>
+                                <td>${outcome.point || 'N/A'}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td colspan="6">No totals data available for this match</td>
+                        `;
+                        tableBody.appendChild(row);
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching or displaying data:', error);
+                alert('Failed to load data. Please check the console for details.');
+            }
+        });
+    </script>
+</body>
+</html>

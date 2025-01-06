@@ -65,7 +65,7 @@ const server = createServer((req, res) => {
         const urlParams = new URLSearchParams(req.url.split('?')[1]);
         const sport = urlParams.get('sport') || 'soccer_epl'; // Default to EPL
         const region = urlParams.get('region') || 'us'; // Default to 'us'
-        const market = urlParams.get('market') || 'h2h'; // Default to 'h2h'
+        const market = urlParams.get('market') || 'totals'; // Default to 'h2h'
 
         console.log(`Fetching odds data for sport: ${sport}, region: ${region}, market: ${market}`);
 

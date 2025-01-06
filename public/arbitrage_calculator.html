@@ -17,27 +17,53 @@
             color: #333;
         }
         
-        /* Styling for the toggle button section */
-        .toggle-button {
-            display: flex;
-            justify-content: center;
-            margin: 20px auto;
+        /* Toggle switch styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-right: 10px;
         }
 
-        .toggle-button button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: bold;
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
             cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
         }
 
-        .toggle-button button:hover {
-            background-color: #0056b3;
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
         }
+
+        input:checked + .slider {
+            background-color: #007bff;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);        
+        }
+
         .site-header {
             background-color: #007bff;
             color: white;
@@ -191,6 +217,7 @@
             // Update the button text dynamically
             document.getElementById('toggle-label').textContent = isAmericanOdds ? 'Decimal Odds' : 'American Odds';
         }
+        
         // Restore the toggle state on page load
         window.onload = () => {
                     const savedState = localStorage.getItem('isAmericanOdds');
@@ -226,8 +253,8 @@
 
             try {
                 // Convert odds based on the current input format
-                const decimalOdds1 = isAmericanOdds ? convertOddsToDecimal(odds1) : parseFloat(odds1);
-                const decimalOdds2 = isAmericanOdds ? convertOddsToDecimal(odds2) : parseFloat(odds2);
+                const decimalOdds2 = isAmericanOdds ? convertOddsToDecimal(odds1) : parseFloat(odds1);
+                const decimalOdds1 = isAmericanOdds ? convertOddsToDecimal(odds2) : parseFloat(odds2);
 
                 // Validate converted odds
                 if (isNaN(decimalOdds1) || isNaN(decimalOdds2) || decimalOdds1 <= 0 || decimalOdds2 <= 0) {
@@ -275,6 +302,7 @@
         }
     </script>
 </head>
+
 <body>
 
     <header class="site-header">
@@ -282,28 +310,21 @@
         <nav>
             <ul>
                 <li><a href="home.html">Home</a></li>
-            <li><a href="profile.html">Profile</a></li>
-        <li><a href="soccer.html">Soccer</a></li>
-        <li><a href="arbitrage_betting.html">Arbitrage Betting</a></li>
-        <li><a href="arbitrage_calculator.html">Arbitrage Calculator</a></li>
-        <li><a href="odds.html">Odds Data</a></li>
-        <li><a href="arbitrage_plays">Arbitrage Plays</a></li>
-        <li><a href="Profit_Calendar.html">Profit Calendar</a></li>
-        <li><a href="Expected_Value_Calculator.html">Expected Value Calculator</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="arbitrage_betting.html">Arbitrage Betting</a></li>
+                <li><a href="arbitrage_calculator.html">Arbitrage Calculator</a></li>
+                <li><a href="odds.html">Odds Data</a></li>
+                <li><a href="arbitrage_plays">Arbitrage Plays</a></li>
+                <li><a href="Profit_Calendar.html">Profit Calendar</a></li>
+                <li><a href="Expected_Value_Calculator.html">Expected Value Calculator</a></li>
             </ul>
         </nav>
     </header>
    
-    <!-- Button to toggle between American and Decimal odds -->
-    <div class="toggle-button">
-        <button onclick="toggleOddsInput()">
-            Switch to <span id="toggle-label">Decimal Odds</span>
-        </button>
-    </div>
 
     <main>
         <section>
-            <h2>What is Arbitrage Betting?</h2>
+            <h2>What is Arbitrage Betting</h2>
             <p>Arbitrage betting is a strategy that allows you to place bets on all possible outcomes of an event using different bookmakers to guarantee a profit, regardless of the result. This method exploits differences in odds offered by various betting platforms.</p>
         </section>
 
@@ -328,6 +349,17 @@
 
         <section>
             <h2>Arbitrage Betting Calculator</h2>
+               
+            <!-- Button to toggle between American and Decimal odds -->
+            <div class="toggle-button">
+                <label class="switch">
+                    <input type="checkbox" id="odds-toggle" onchange="toggleOddsInput()">
+                    <span class="slider"></span>
+                </label>
+                <span id="toggle-label">Decimal Odds</span>
+            </div>
+
+
             <form onsubmit="event.preventDefault(); calculateArbitrage();">
                 <!-- Input for Outcome 1 odds -->
                 <label id="odds1-label" for="odds1">Odds for Outcome 1 (American):</label>

@@ -33,14 +33,12 @@
             align-items: center;
         }
 
-
         .navbar ul {
             list-style: none;
             margin: 0;
             padding: 0;
             display: flex;
         }
-
 
         .navbar ul li {
             margin: 0 15px;
@@ -62,13 +60,13 @@
             background-color: #0d2033;
             color: #ffffff;
             overflow-x: auto;
-            table-layout: fixed; /* Add this line */
+            table-layout: fixed;
         }
 
         .arbitrage-table th, .arbitrage-table td {
             text-align: center;
             border: 1px solid #243b55;
-            padding: 10px; /* Ensure consistent padding */
+            padding: 10px;
         }
 
         .arbitrage-table th {
@@ -172,6 +170,22 @@
         .calculate-button:hover {
             background-color: #0056b3;
         }
+
+        .refresh-button {
+            margin: 10px 0;
+            padding: 8px 16px;
+            background-color: #ffa500;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .refresh-button:hover {
+            background-color: #cc8400;
+        }
+
         .sportsbook-logo {
             width: 20px;
             height: 20px;
@@ -195,6 +209,7 @@
         <li><a href="Expected_Value_Calculator.html">Expected Value Calculator</a></li>
         </ul>
     </div>
+
     <div class="content">
         <div class="filter-section">
             <label for="event-filter">Filter by Event:</label>
@@ -202,8 +217,10 @@
                 <option value="all">All</option>
                 <option value="nba">NBA</option>
                 <option value="soccer">Soccer</option>
-            </select>      
+            </select>  
+            <button class="refresh-button" onclick="window.fetchArbitrageOpportunities()">Refresh Data</button>
         </div> 
+
         <table class="arbitrage-table">
             <thead>
                 <tr>
@@ -211,6 +228,7 @@
                     <th>Event</th>
                     <th>Market</th> <!-- Add Market column -->
                     <th>Books</th>
+                    <th>Odds</th>
                     <th>Bet Size</th>
                     <th>Profit</th>
                     <th>Action</th>
@@ -218,7 +236,7 @@
             </thead>
             <tbody id="arbitrage-table-body"> </tbody>
         </table>
-        </div>
+    </div>
 
     <div class="container">
         <div id="arbitrage-container" class="arbitrage-data">
@@ -226,8 +244,15 @@
         </div>
     </div>
 
-    <script>
-         const imageMap = {
+    <script type="module">
+        import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+        import { getFirestore, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+        import { app } from './firebase.js';
+
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const imageMap = {
             "FanDuel": "img/fanduel.png",
             "DraftKings": "img/draftkings.png",
             "BetMGM": "img/betMGM.png",
@@ -255,40 +280,35 @@
             };
         }
 
-        function toggleFollowButton(button, match) {
-            if (button.classList.contains('follow-button')) {
-                button.textContent = 'Unfollow';
-                button.classList.remove('follow-button');
-                button.classList.add('unfollow-button');
-                addToProfile(match);
-            } else {
-                button.textContent = 'Follow';
-                button.classList.remove('unfollow-button');
-                button.classList.add('follow-button');
-                removeFromProfile(match);
-            }
-        }
+        window.handleFollow = async function(match) {
+            try {
+                const user = auth.currentUser;
+                if (!user) {
+                    alert("You need to be logged in to follow plays.");
+                    return;
+                }
 
-        function addToProfile(match) {
-            const profileContainer = document.getElementById('profile-container');
-            if (profileContainer) {
-                const listItem = document.createElement('li');
-                listItem.textContent = match;
-                listItem.id = `profile-item-${match}`;
-                profileContainer.appendChild(listItem);
-            }
-        }
+                const userRef = doc(db, "users", user.uid);
+                await updateDoc(userRef, {
+                    followedArbitragePlays: arrayUnion(match)
+                });
 
-        function removeFromProfile(match) {
-            const listItem = document.getElementById(`profile-item-${match}`);
-            if (listItem) {
-                listItem.remove();
+                alert(`You are now following: ${match.event}`);
+                const followButton = document.querySelector(`[data-event="${match.event}"]`);
+                if (followButton) {
+                    followButton.textContent = "Unfollow";
+                    followButton.classList.remove("follow-button");
+                    followButton.classList.add("unfollow-button");
+                }
+            } catch (error) {
+                console.error("Error following arbitrage play:", error);
+                alert("Failed to follow this arbitrage play. Please try again.");
             }
-        }
+        };
 
-        async function fetchArbitrageOpportunities() {
+        window.fetchArbitrageOpportunities = async function() {
             const arbitrageContainer = document.getElementById('arbitrage-container');
-            arbitrageContainer.innerHTML = '<p>Loading...</p>';
+            arbitrageContainer.innerHTML = '';
 
             try {
                 const response = await fetch('/api/odds');
@@ -304,7 +324,7 @@
                     return;
                 }
 
-                arbitrageContainer.innerHTML = eplGames
+                const rows = eplGames
                     .map((game) => {
                         const bookmakers = game.bookmakers;
                         if (bookmakers.length < 2) {
@@ -337,22 +357,31 @@
                             </div>`;
                         }
 
-                    return `<table class="arbitrage-table">
-                        <tr>    
-                            <th>${arbitrage.totalARB.toFixed(2)}%</th>
-                            <th> ${game.home_team} vs ${game.away_team}</th>
-                            <th>${bestHome.market}</th> <!-- Display market information -->
-                            <th>${bestHome.title} <img src="${bestHome.logo}" alt="${bestHome.title} Logo" class="sportsbook-logo">
-                                ${bestAway.title} <img src="${bestAway.logo}" alt="${bestAway.title} Logo" class="sportsbook-logo"></th>
-                            <th>Home: $${arbitrage.homeStake}
-                               ,Away:  $${arbitrage.awayStake} </th>
-                            <th>$${arbitrage.guaranteedProfit}</th>
-                            <th><button class="bet-button">Bet Now</button><button class="follow-button" onclick="toggleFollowButton(this, '${game.home_team} vs ${game.away_team}')">Follow</button>
-                        </tr>
-                        </table>`;
-                            
+                        return `<tr>    
+                                <td>${arbitrage.totalARB.toFixed(2)}%</td>
+                                <td>${game.home_team} vs ${game.away_team}</td>
+                                <td>${bestHome.market}</td>
+                                <td>${bestHome.title} <img src="${bestHome.logo}" alt="${bestHome.title} Logo" class="sportsbook-logo">
+                                    ${bestAway.title} <img src="${bestAway.logo}" alt="${bestAway.title} Logo" class="sportsbook-logo"></td>
+                                <td>Home: ${bestHome.home}, Away: ${bestAway.away}</td>
+                                <td>Home: $${arbitrage.homeStake}, Away:  $${arbitrage.awayStake} </td>
+                                <td>$${arbitrage.guaranteedProfit}</td>
+                                <td><button class="bet-button">Bet Now</button>
+                                    <button class="follow-button" data-event="${game.home_team} vs ${game.away_team}" onclick="handleFollow({
+                                        event: '${game.home_team} vs ${game.away_team}',
+                                        market: '${bestHome.market}',
+                                        arbPercentage: '${arbitrage.totalARB.toFixed(2)}%',
+                                        books: '${bestHome.title}, ${bestAway.title}',
+                                        odds: 'Home: ${bestHome.home}, Away: ${bestAway.away}',
+                                        betSize: 'Home: $${arbitrage.homeStake}, Away: $${arbitrage.awayStake}',
+                                        profit: '$${arbitrage.guaranteedProfit}'
+                                    })">Track</button>
+                                </td>
+                            </tr>`;
                     })
-                .join('');
+                    .join('');
+
+                document.getElementById('arbitrage-table-body').innerHTML = rows;
 
             } catch (error) {
                 console.error('Error fetching arbitrage opportunities:', error);

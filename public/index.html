@@ -141,7 +141,7 @@
                 localStorage.setItem('profileGoal', `$${userData.goal}`);
 
                 alert(`Welcome back, ${userData.name}!`);
-                window.location.href = 'profile.html';
+                window.location.href = './Profile/profile.html'; // Updated path
             } catch (error) {
                 console.error('Error during sign-in:', error);
                 alert(`Error: ${error.message}`);
@@ -154,7 +154,7 @@
 <body>
     <div class="container">
         <div class="logo">
-            <img src="logo.png" alt="Sports Central Logo">
+            <img src="./img/Index.png" alt="Sports Central Logo">
         </div>
         <div class="wrapper">
             <div class="form-section">
@@ -171,7 +171,7 @@
                     <button type="submit" class="btn">Sign In</button>
                 </form>
                 <div class="link">
-                    <p>Don't have an account? <a href="Sign_Up.html">Sign Up</a></p>
+                    <p>Don't have an account? <a href="./Profile/Sign_Up.html">Sign Up</a></p>
                 </div>
             </div>
         </div>

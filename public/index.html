@@ -164,6 +164,30 @@
                 });
             }, 50);
         };
+
+        async function handleSignIn(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                alert('Please enter both username and password.');
+                return;
+            }
+
+            try {
+                // Simulate sign-in by storing data in localStorage
+                localStorage.setItem('username', username);
+                alert(`Welcome back, ${username}!`);
+                window.location.href = './Profile/profile.html';
+            } catch (error) {
+                console.error('Error during sign-in:', error);
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        window.handleSignIn = handleSignIn;
     </script>
 </head>
 <body>

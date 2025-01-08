@@ -165,6 +165,22 @@
         .btn-edit:hover {
             background-color: #0056b3;
         }
+
+        .btn-logout {
+            display: block;
+            margin: 20px auto 0;
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-logout:hover {
+            background-color: #c82333;
+        }
     </style>
     <script type="module">
         import { db } from '../firebase.js';
@@ -172,37 +188,51 @@
 
         async function loadProfileData() {
             try {
-                const userId = localStorage.getItem('userId'); // Retrieve user ID from localStorage
+                // Get userId from localStorage
+                const userId = localStorage.getItem('userId');
+
                 if (!userId) {
-                    alert('User not logged in. Redirecting to login page.');
-                    window.location.href = 'index.html';
+                    alert("User not logged in. Please sign in again.");
+                    window.location.href = '../index.html';
                     return;
                 }
 
+                // Fetch user data from Firestore
                 const userDocRef = doc(db, 'users', userId);
                 const userDoc = await getDoc(userDocRef);
 
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
+                    console.log("User document retrieved:", userData);
 
-                    document.getElementById('profile-name').textContent = userData.name;
-                    document.getElementById('profile-bio').textContent = userData.bio;
-                    document.getElementById('profile-goal').textContent = `$${userData.goal}`;
-                    document.getElementById('profile-picture-display').src = userData.photoURL || 'default-avatar.png';
-                    document.getElementById('total-wins').textContent = userData.totalWins || 0;
-                    document.getElementById('total-bets').textContent = userData.totalBets || 0;
-                    document.getElementById('success-rate').textContent = userData.successRate || 'N/A';
+                    // Display the user data on the profile page
+                    document.getElementById("profile-name").textContent = userData.name || "No Name";
+                    document.getElementById("profile-bio").textContent = userData.bio || "No Bio";
+                    document.getElementById("profile-goal").textContent = `$${userData.goal || 0}`;
+                    document.getElementById("profile-picture-display").src = userData.photoURL || "default-avatar.png";
+                    document.getElementById("total-wins").textContent = userData.totalWins || 0;
+                    document.getElementById("total-bets").textContent = userData.totalBets || 0;
+                    document.getElementById("success-rate").textContent = userData.successRate || "N/A";
                 } else {
-                    alert('User data not found. Redirecting to login page.');
-                    window.location.href = 'index.html';
+                    console.error("User document does not exist for userId:", userId);
+                    alert("User data not found. Please sign in again.");
+                    window.location.href = '../index.html';
                 }
             } catch (error) {
-                console.error('Error loading profile data:', error);
-                alert('An error occurred while loading the profile. Please try again later.');
+                console.error("Error loading profile data:", error);
+                alert("An error occurred while loading the profile. Please try again later.");
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadProfileData);
+        function logout() {
+            localStorage.removeItem('userId');
+            localStorage.removeItem('username');
+            localStorage.removeItem('loggedIn');
+            window.location.href = '../index.html';
+        }
+
+        document.addEventListener("DOMContentLoaded", loadProfileData);
+        window.logout = logout;
     </script>
 </head>
 <body>
@@ -211,14 +241,13 @@
         <ul>
             <li><a href="home.html">Home</a></li>
             <li><a href="profile.html">Profile</a></li>
-        <li><a href="../arbitrage_betting.html">Arbitrage Betting</a></li>
-        <li><a href="../arbitrage_calculator.html">Arbitrage Calculator</a></li>
-        <li><a href="../odds.html">Odds Data</a></li>
-        <li><a href="../Total_display.html">Total plays</a></li>
-        <li><a href="../arbitrage_plays">Arbitrage Plays</a></li>
-        <li><a href="../Profit_Calendar.html">Profit Calendar</a></li>
-        <li><a href="../Expected_Value_Calculator.html">Expected Value Calculator</a></li>
-        </ul>
+            <li><a href="../arbitrage_betting.html">Arbitrage Betting</a></li>
+            <li><a href="../arbitrage_calculator.html">Arbitrage Calculator</a></li>
+            <li><a href="../odds.html">Odds Data</a></li>
+            <li><a href="../Total_display.html">Total plays</a></li>
+            <li><a href="../arbitrage_plays">Arbitrage Plays</a></li>
+            <li><a href="../Profit_Calendar.html">Profit Calendar</a></li>
+            <li><a href="../Expected_Value_Calculator.html">Expected Value Calculator</a></li>
         </ul>
     </div>
 
@@ -256,6 +285,7 @@
         </div>
 
         <button class="btn-edit">Edit Profile</button>
+        <button class="btn-logout" onclick="logout()">Logout</button>
     </div>
 
     <footer>

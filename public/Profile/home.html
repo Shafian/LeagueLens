@@ -268,14 +268,24 @@
     }
   </style>
 </head>
+
 <body>
-  <header>
-    <h1>Sports Central</h1>
+  <header class="site-header">
+    <h1>
+      <img src="../img/LeagueLens.png" alt="LeagueLens" class="logo">
+      Sports Central
+    </h1>
     <nav>
-      <a href="home.html">Home</a>
-      <a href="profile.html">Profile</a>
-      <a href="arbitrage_betting.html">Arbitrage Betting</a>
-      <a href="arbitrage_calculator.html">Arbitrage Calculator</a>
+      <ul>
+        <li><a href="home.html">Home</a></li>
+            <li><a href="profile.html">Profile</a></li>
+        <li><a href="../arbitrage_betting.html">Arbitrage Betting</a></li>
+        <li><a href="../arbitrage_calculator.html">Arbitrage Calculator</a></li>
+        <li><a href="../odds.html">Odds Data</a></li>
+        <li><a href="../arbitrage_plays">Arbitrage Plays</a></li>
+        <li><a href="../Profit_Calendar.html">Profit Calendar</a></li>
+        <li><a href="../Expected_Value_Calculator.html">Expected Value Calculator</a></li>
+        </ul>
     </nav>
   </header>
 
@@ -289,39 +299,22 @@
   <main>
     <section>
       <h2>Trending News</h2>
-      <div class="news-item"><a href="#">Lionel Messi wins Ballon d'Or for a record-breaking 8th time</a></div>
-      <div class="news-item"><a href="#">NBA Playoffs: A historic run by the Miami Heat</a></div>
-      <div class="news-item"><a href="#">Cricket World Cup 2024: India and Australia dominate</a></div>
+      <ul>
+        <li><a href="#">Lionel Messi wins Ballon d'Or for a record-breaking 8th time</a></li>
+        <li><a href="#">NBA Playoffs: A historic run by the Miami Heat</a></li>
+        <li><a href="#">Cricket World Cup 2024: India and Australia dominate</a></li>
+      </ul>
     </section>
 
-    <section>
-      <h2>Social Highlights</h2>
-      <div class="post">
-        <div class="post-header">
-          <img src="default-avatar.png" alt="User Avatar">
-          <h3>@ArbThief</h3>
-        </div>
-        <div class="post-content">
-          I went from losing thousands of dollars a month to making 30k in a single month with one strategy: arbitrage betting. It changed everything!
-        </div>
+    <section class="tools">
+      <h2>Popular Tools</h2>
+      <div class="tool-item">
+        <h3><a href="arbitrage.html">Arbitrage Calculator</a></h3>
+        <p>Calculate guaranteed profits using our Arbitrage Betting Calculator.</p>
       </div>
-      <div class="post">
-        <div class="post-header">
-          <img src="default-avatar.png" alt="User Avatar">
-          <h3>@BouinsBets</h3>
-        </div>
-        <div class="post-content">
-          March Recap: +$25,340 with a 31.76% ROI! Big thanks to tools like @OddsJam for making it possible.
-        </div>
-      </div>
-      <div class="post">
-        <div class="post-header">
-          <img src="default-avatar.png" alt="User Avatar">
-          <h3>@TheArbFather</h3>
-        </div>
-        <div class="post-content">
-          $18,000 profit tracked in February 2024. Consistency is key. Thanks to @OddsJam for the tools.
-        </div>
+      <div class="tool-item">
+        <h3><a href="#">Odds Converter</a></h3>
+        <p>Easily convert odds between American, Decimal, and Fractional formats.</p>
       </div>
     </section>
   </main>
@@ -343,47 +336,5 @@
   <footer>
     <p>&copy; 2024 Sports Central. All rights reserved. <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
   </footer>
-
-  <script>
-    const images = document.querySelectorAll('.hero img');
-    let currentIndex = 0;
-
-    setInterval(() => {
-      images[currentIndex].classList.remove('active');
-      currentIndex = (currentIndex + 1) % images.length;
-      images[currentIndex].classList.add('active');
-    }, 5000);
-
-    function toggleChatPopup() {
-      const chatPopup = document.getElementById('chat-popup');
-      chatPopup.classList.toggle('active');
-    }
-
-    function sendMessage() {
-      const input = document.getElementById('chat-input');
-      const message = input.value.trim();
-      if (message === '') return;
-
-      const messagesContainer = document.getElementById('chat-messages');
-
-      const userMessage = document.createElement('div');
-      userMessage.className = 'message user-message';
-      userMessage.textContent = message;
-      messagesContainer.appendChild(userMessage);
-
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-      input.value = '';
-
-      setTimeout(() => {
-        const botMessage = document.createElement('div');
-        botMessage.className = 'message bot-message';
-        botMessage.textContent = `You said: "${message}"`;
-        messagesContainer.appendChild(botMessage);
-
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      }, 1000);
-    }
-  </script>
 </body>
 </html>

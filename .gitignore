@@ -4,3 +4,10 @@ serviceAccountKey.json
 firebase.js
 .DS_Store
 .vscode
+old.css
+style_arb_calc.css
+style_arb_plays.css
+style_odds.css
+home.css
+profile.css
+total_display.css

@@ -4,139 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profit Calendar</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-            color: #333;
-        }
+    <link rel="stylesheet" href="css/styles.css">
 
-        .navbar {
-            background-color: #0044cc;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-        }
-
-        .navbar ul li {
-            margin: 0 10px;
-        }
-
-        .navbar ul li a {
-            text-decoration: none;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .navbar ul li a:hover {
-            color: #ffcc00;
-        }
-
-        .calendar {
-            width: 90%;
-            max-width: 600px;
-            background-color: #fff;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin: 20px auto;
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .calendar-header h2 {
-            margin: 0;
-            font-size: 1.5em;
-        }
-
-        .calendar-header span {
-            font-size: 1em;
-            color: #28a745;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            text-align: center;
-        }
-
-        .day {
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-        }
-
-        .bets-list {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .bets-list h3 {
-            margin-top: 0;
-        }
-
-        .bet-item {
-            border-bottom: 1px solid #ddd;
-            padding: 10px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .bet-item:last-child {
-            border-bottom: none;
-        }
-
-        .delete-btn {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .delete-btn:hover {
-            background-color: #c82333;
-        }
-    </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="logo">
-            <a href="index.html" style="color: #fff; text-decoration: none; font-size: 1.2em;">Sports Central</a>
-        </div>
-        <ul>
-            <li><a href="./Profile/home.html">Home</a></li>
-            <li><a href="./Profile/profile.html">Profile</a></li>
-        <li><a href="arbitrage_betting.html">Arbitrage Betting</a></li>
-        <li><a href="arbitrage_calculator.html">Arbitrage Calculator</a></li>
-        <li><a href="odds.html">Odds Data</a></li>
-        <li><a href="arbitrage_plays">Arbitrage Plays</a></li>
-        <li><a href="Profit_Calendar.html">Profit Calendar</a></li>
-        <li><a href="Expected_Value_Calculator.html">Expected Value Calculator</a></li>
-        </ul>
-    </div>
+    <header class="site-header">
+        <h1>
+            <img src="img/LeagueLens.png" alt="LeagueLens" class="logo">
+            Profit Calender
+        </h1>
+        <nav>
+            <ul>
+                <li><a href="./Profile/home.html">Home</a></li>
+                <li><a href="./Profile/profile.html">Profile</a></li>
+                <li><a href="arbitrage_betting.html">Arbitrage Betting</a></li>
+                <li><a href="arbitrage_calculator.html">Arbitrage Calculator</a></li>
+                <li><a href="odds.html">Odds Data</a></li>
+                <li><a href="../Total_display.html">Total plays</a></li>
+                <li><a href="arbitrage_plays">Arbitrage Plays</a></li>
+                <li><a class="active" href="Profit_Calendar.html">Profit Calendar</a></li>
+                <li><a href="Expected_Value_Calculator.html">Expected Value Calculator</a></li>
+            </ul>
+        </nav>
+    </header>
 
     <div class="calendar">
         <div class="calendar-header">
@@ -227,5 +117,9 @@
 
         document.addEventListener('DOMContentLoaded', loadBets);
     </script>
+     <footer>
+        <p>&copy; 2024 LeagueLens. LLC. All rights reserved.</p>
+    </footer>
+
 </body>
 </html>

@@ -4,184 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-        }
+    <link rel="stylesheet" href="../css/styles.css">
 
-        .navbar {
-            background-color: #007bff;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-        }
-
-        .navbar h1 {
-            margin: 0;
-            font-size: 20px;
-        }
-
-        .navbar ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-        }
-
-        .navbar ul li {
-            margin: 0 10px;
-        }
-
-        .navbar ul li a {
-            color: white;
-            text-decoration: none;
-        }
-
-        .navbar ul li a:hover {
-            text-decoration: underline;
-        }
-
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 90%;
-            max-width: 800px;
-            margin: 20px auto;
-        }
-
-        h1 {
-            color: #007bff;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .profile-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .profile-picture {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin: 0 auto 20px;
-            border: 3px solid #007bff;
-        }
-
-        .profile-picture img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .profile-info {
-            text-align: center;
-        }
-
-        .profile-info h2 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .profile-info p {
-            color: #555;
-            margin-bottom: 20px;
-        }
-
-        .profile-goal {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .profile-goal h3 {
-            margin: 0 0 10px;
-            color: #333;
-        }
-
-        .profile-goal p {
-            margin: 0;
-            color: #007bff;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .profile-stats {
-            display: flex;
-            justify-content: space-around;
-            background-color: #e9f7ff;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border: 1px solid #ddd;
-        }
-
-        .stats-item {
-            text-align: center;
-        }
-
-        .stats-item h3 {
-            margin: 0;
-            color: #007bff;
-            font-size: 24px;
-        }
-
-        .stats-item p {
-            margin: 5px 0 0;
-            color: #333;
-        }
-
-        footer {
-            text-align: center;
-            padding: 15px;
-            background-color: #007bff;
-            color: white;
-            margin-top: 20px;
-        }
-
-        .btn-edit {
-            display: block;
-            margin: 20px auto 0;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .btn-edit:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-logout {
-            display: block;
-            margin: 20px auto 0;
-            background-color: #dc3545;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .btn-logout:hover {
-            background-color: #c82333;
-        }
-    </style>
     <script type="module">
         import { db } from '../firebase.js';
         import { getDoc, doc } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js';
@@ -235,21 +59,28 @@
         window.logout = logout;
     </script>
 </head>
+
 <body>
-    <div class="navbar">
-        <h1>Sports Betting</h1>
-        <ul>
-            <li><a href="home.html">Home</a></li>
-            <li><a href="profile.html">Profile</a></li>
-            <li><a href="../arbitrage_betting.html">Arbitrage Betting</a></li>
-            <li><a href="../arbitrage_calculator.html">Arbitrage Calculator</a></li>
-            <li><a href="../odds.html">Odds Data</a></li>
-            <li><a href="../Total_display.html">Total plays</a></li>
-            <li><a href="../arbitrage_plays">Arbitrage Plays</a></li>
-            <li><a href="../Profit_Calendar.html">Profit Calendar</a></li>
-            <li><a href="../Expected_Value_Calculator.html">Expected Value Calculator</a></li>
-        </ul>
-    </div>
+    <header class="site-header">
+        <h1>
+            <img src="../img/LeagueLens.png" alt="LeagueLens" class="logo">
+            Sports Betting
+        </h1>
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a class="active" href="profile.html">Profile</a></li>
+                <li><a href="../arbitrage_betting.html">Arbitrage Betting</a></li>
+                <li><a href="../arbitrage_calculator.html">Arbitrage Calculator</a></li>
+                <li><a href="../odds.html">Odds Data</a></li>
+                <li><a href="../Total_display.html">Total plays</a></li>
+                <li><a href="../arbitrage_plays">Arbitrage Plays</a></li>
+                <li><a href="../Profit_Calendar.html">Profit Calendar</a></li>
+                <li><a href="../Expected_Value_Calculator.html">Expected Value Calculator</a></li>
+            </ul>
+        </nav>
+
+    </header>
 
     <div class="container">
         <div class="profile-header">

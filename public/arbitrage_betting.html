@@ -6,135 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Arbitrage Betting</title>
     <link rel="stylesheet" href="css/styles.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-        .site-header {
-            background-color: #007bff;
-            color: white;
-            padding: 1rem 0;
-            text-align: center;
-        }
-        .site-header h1 {
-            margin: 0;
-        }
-        nav {
-            background: #333;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-        }
-        nav ul li {
-            margin: 0;
-        }
-        nav ul li a {
-            display: block;
-            padding: 15px 20px;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: background 0.3s;
-        }
-        nav ul li a:hover {
-            background: #555;
-        }
-        main {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        h2 {
-            color: #007bff;
-            margin-bottom: 15px;
-        }
-        form {
-            margin-top: 20px;
-            padding: 20px;
-            border: 2px solid #ddd;
-            border-radius: 15px;
-            background-color: #f9f9f9;
-        }
-        form label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-        form input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        form button {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        form button:hover {
-            background-color: #0056b3;
-        }
-        #result {
-            margin-top: 20px;
-            padding: 15px;
-            border: 2px solid #007bff;
-            border-radius: 10px;
-            background-color: #e9f7ff;
-            font-size: 16px;
-        }
-        .action-buttons {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-        }
-        .action-buttons button {
-            margin: 0 10px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .action-buttons button:hover {
-            background-color: #0056b3;
-        }
-        section {
-            margin-bottom: 30px;
-        }
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            padding: 15px 0;
-            background: #333;
-            color: white;
-        }
-    </style>
+    
     <script>
         function calculateArbitrage() {
             const odds1 = document.getElementById('odds1').value.trim();
@@ -159,7 +31,8 @@
             };
 
             try {
-                const decimalOdds1 = convertOddsToDecimal(odds1);
+                const decimalOdds1 = conve
+                rtOddsToDecimal(odds1);
                 const decimalOdds2 = convertOddsToDecimal(odds2);
 
                 // Calculate implied probabilities
@@ -202,19 +75,24 @@
         }
     </script>
 </head>
+
 <body>
     <header class="site-header">
-        <h1>Arbitrage Betting</h1>
+        <h1>
+            <img src="img/LeagueLens.png" alt="LeagueLens" class="logo">
+            Arbitrage Betting
+        </h1>
         <nav>
             <ul>
                 <li><a href="./Profile/home.html">Home</a></li>
-            <li><a href="./Profile/profile.html">Profile</a></li>
-        <li><a href="arbitrage_betting.html">Arbitrage Betting</a></li>
-        <li><a href="arbitrage_calculator.html">Arbitrage Calculator</a></li>
-        <li><a href="odds.html">Odds Data</a></li>
-        <li><a href="arbitrage_plays">Arbitrage Plays</a></li>
-        <li><a href="Profit_Calendar.html">Profit Calendar</a></li>
-        <li><a href="Expected_Value_Calculator.html">Expected Value Calculator</a></li>
+                <li><a href="./Profile/profile.html">Profile</a></li>
+                <li><a class="active" href="arbitrage_betting.html">Arbitrage Betting</a></li>
+                <li><a href="arbitrage_calculator.html">Arbitrage Calculator</a></li>
+                <li><a href="odds.html">Odds Data</a></li>
+                <li><a href="../Total_display.html">Total plays</a></li>
+                <li><a href="arbitrage_plays">Arbitrage Plays</a></li>
+                <li><a href="Profit_Calendar.html">Profit Calendar</a></li>
+                <li><a href="Expected_Value_Calculator.html">Expected Value Calculator</a></li>
             </ul>
         </nav>
     </header>

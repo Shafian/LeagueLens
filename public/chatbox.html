@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Box</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .chat-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        .chat-popup.active {
+            display: flex;
+        }
+
+        .chat-header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            font-size: 1.2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .chat-header .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            background: #f9f9f9;
+        }
+
+        .chat-messages .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+            clear: both;
+        }
+
+        .chat-messages .user-message {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            float: right;
+        }
+
+        .chat-messages .bot-message {
+            background-color: #e9e9e9;
+            color: #333;
+            align-self: flex-start;
+            float: left;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .chat-input button {
+            padding: 10px 15px;
+            margin-left: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .chat-input button:hover {
+            background-color: #0056b3;
+        }
+
+        .open-chat-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <button class="open-chat-btn" onclick="toggleChatPopup()">💬</button>
+
+    <div class="chat-popup" id="chat-popup">
+        <div class="chat-header">
+            Chat with Us
+            <button class="close-btn" onclick="toggleChatPopup()">&times;</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <!-- Chat messages will appear here -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chat-input" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleChatPopup() {
+            const chatPopup = document.getElementById('chat-popup');
+            chatPopup.classList.toggle('active');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (message === '') return;
+
+            const messagesContainer = document.getElementById('chat-messages');
+
+            // Add user message to chat
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user-message';
+            userMessage.textContent = message;
+            messagesContainer.appendChild(userMessage);
+
+            // Scroll to the bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Clear input
+            input.value = '';
+
+            // Simulate bot response
+            setTimeout(() => {
+                const botMessage = document.createElement('div');
+                botMessage.className = 'message bot-message';
+                botMessage.textContent = `You said: "${message}"`; // Replace with real bot logic
+                messagesContainer.appendChild(botMessage);
+
+                // Scroll to the bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 1000);
+        }
+
+        // Function to initialize chat on different pages
+        function initChatBox(containerId) {
+            /**
+             * Initializes the chat box on the specified container.
+             * @param {string} containerId - The ID of the container where the chat box will be appended.
+             * Usage Example:
+             *   Call `initChatBox('some-container-id')` on the target page to dynamically load the chat box.
+             *   Ensure this line does not conflict with other parts of your application
+             *   where the button might need to remain visible in certain contexts.
+             */
+            const chatBoxHTML = document.querySelector('.chat-popup').outerHTML;
+            document.getElementById(containerId).innerHTML = chatBoxHTML;
+            document.querySelector('.open-chat-btn').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

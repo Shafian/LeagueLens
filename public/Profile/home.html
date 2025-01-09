@@ -124,51 +124,41 @@
       text-decoration: underline;
     }
 
-    .tool-item {
+    .post {
+      background: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .post-header {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .tool-item i {
-      font-size: 1.5rem;
-      color: #007bff;
+    .post-header img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid #007bff;
     }
 
-    .tool-item a {
-      font-size: 1.2rem;
-      font-weight: bold;
-      text-decoration: none;
-      color: #007bff;
-      transition: color 0.3s;
-    }
-
-    .tool-item a:hover {
-      color: #0056b3;
-    }
-
-    ul {
-      padding: 0;
-      list-style: none;
+    .post-header h3 {
       margin: 0;
+      font-size: 1.2rem;
+      color: #333;
     }
 
-    ul li {
-      padding: 10px 0;
-      border-bottom: 1px solid #ddd;
-    }
-
-    ul li:last-child {
-      border-bottom: none;
-    }
-
-    ul li::before {
-      content: '\2022';
-      color: #007bff;
-      font-weight: bold;
-      display: inline-block;
-      width: 1em;
-      margin-left: -1em;
+    .post-content {
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.5;
     }
 
     footer {
@@ -186,6 +176,95 @@
 
     footer a:hover {
       text-decoration: underline;
+    }
+
+    .chat-popup {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 300px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 1000;
+    }
+
+    .chat-popup.active {
+      display: flex;
+    }
+
+    .chat-popup .chat-header {
+      background-color: #007bff;
+      color: white;
+      padding: 15px;
+      font-size: 1.2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .chat-popup .chat-header .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .chat-popup .chat-messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      background: #f9f9f9;
+    }
+
+    .chat-popup .chat-input {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #ddd;
+    }
+
+    .chat-popup .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .chat-popup .chat-input button {
+      padding: 10px 15px;
+      margin-left: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .chat-popup .chat-input button:hover {
+      background-color: #0056b3;
+    }
+
+    .open-chat-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
   </style>
 </head>
@@ -216,20 +295,50 @@
     </section>
 
     <section>
-      <h2>Popular Tools</h2>
-      <div class="tool-item"><i class="fas fa-calculator"></i><a href="arbitrage.html">Arbitrage Calculator</a></div>
-      <div class="tool-item"><i class="fas fa-exchange-alt"></i><a href="#">Odds Converter</a></div>
-    </section>
-
-    <section>
-      <h2>Upcoming Events</h2>
-      <ul>
-        <li>Champions League Final: June 1, 2024</li>
-        <li>NBA Draft: July 15, 2024</li>
-        <li>Cricket World Cup Semi-Finals: August 12, 2024</li>
-      </ul>
+      <h2>Social Highlights</h2>
+      <div class="post">
+        <div class="post-header">
+          <img src="default-avatar.png" alt="User Avatar">
+          <h3>@ArbThief</h3>
+        </div>
+        <div class="post-content">
+          I went from losing thousands of dollars a month to making 30k in a single month with one strategy: arbitrage betting. It changed everything!
+        </div>
+      </div>
+      <div class="post">
+        <div class="post-header">
+          <img src="default-avatar.png" alt="User Avatar">
+          <h3>@BouinsBets</h3>
+        </div>
+        <div class="post-content">
+          March Recap: +$25,340 with a 31.76% ROI! Big thanks to tools like @OddsJam for making it possible.
+        </div>
+      </div>
+      <div class="post">
+        <div class="post-header">
+          <img src="default-avatar.png" alt="User Avatar">
+          <h3>@TheArbFather</h3>
+        </div>
+        <div class="post-content">
+          $18,000 profit tracked in February 2024. Consistency is key. Thanks to @OddsJam for the tools.
+        </div>
+      </div>
     </section>
   </main>
+
+  <button class="open-chat-btn" onclick="toggleChatPopup()">💬</button>
+
+  <div class="chat-popup" id="chat-popup">
+    <div class="chat-header">
+      Chat with Us
+      <button class="close-btn" onclick="toggleChatPopup()">&times;</button>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input">
+      <input type="text" id="chat-input" placeholder="Type a message...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
 
   <footer>
     <p>&copy; 2024 Sports Central. All rights reserved. <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
@@ -244,6 +353,37 @@
       currentIndex = (currentIndex + 1) % images.length;
       images[currentIndex].classList.add('active');
     }, 5000);
+
+    function toggleChatPopup() {
+      const chatPopup = document.getElementById('chat-popup');
+      chatPopup.classList.toggle('active');
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('chat-input');
+      const message = input.value.trim();
+      if (message === '') return;
+
+      const messagesContainer = document.getElementById('chat-messages');
+
+      const userMessage = document.createElement('div');
+      userMessage.className = 'message user-message';
+      userMessage.textContent = message;
+      messagesContainer.appendChild(userMessage);
+
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      input.value = '';
+
+      setTimeout(() => {
+        const botMessage = document.createElement('div');
+        botMessage.className = 'message bot-message';
+        botMessage.textContent = `You said: "${message}"`;
+        messagesContainer.appendChild(botMessage);
+
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }, 1000);
+    }
   </script>
 </body>
 </html>

@@ -4,7 +4,6 @@ const { createServer } = require('node:http');
 const axios = require('axios'); // Import Axios for API requests
 require('dotenv').config(); // Import dotenv to load environment variables
 
-
 const hostname = '127.0.0.1';
 const port = 3000;
 
@@ -63,9 +62,9 @@ const server = createServer((req, res) => {
       try {
         // Parse URL parameters
         const urlParams = new URLSearchParams(req.url.split('?')[1]);
-        const sport = urlParams.get('sport') || 'soccer_epl'; // Default to EPL
-        const region = urlParams.get('region') || 'us'; // Default to 'us'
-        const market = urlParams.get('market') || 'totals'; // Default to 'h2h'
+        const sport = urlParams.get('sport') || 'soccer_epl,soccer_italy_serie_a'; // Default to EPL
+        const region = urlParams.get('region') || 'us,us2'; // Default to 'us'
+        const market = urlParams.get('market') || 'totals,spreads,h2h'; // Default to 'totals' and 'spreads'
 
         console.log(`Fetching odds data for sport: ${sport}, region: ${region}, market: ${market}`);
 

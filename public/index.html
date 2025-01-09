@@ -107,7 +107,10 @@
             text-decoration: underline;
         }
     </style>
-    <script>
+    <script type="module">
+        import { db } from './firebase.js';
+        import { collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js';
+
         // Initialize puzzle piece movement with collision detection
         window.onload = () => {
             const pieces = document.querySelectorAll(".logo img");
@@ -177,10 +180,27 @@
             }
 
             try {
-                // Simulate sign-in by storing data in localStorage
-                localStorage.setItem('username', username);
-                alert(`Welcome back, ${username}!`);
-                window.location.href = './Profile/profile.html';
+                // Query Firestore for the user with matching username and password
+                const usersRef = collection(db, 'users');
+                const querySnapshot = await getDocs(
+                    query(usersRef, where('username', '==', username), where('password', '==', password))
+                );
+
+                if (!querySnapshot.empty) {
+                    const userDoc = querySnapshot.docs[0];
+                    const userId = userDoc.id;
+                    const userData = userDoc.data();
+
+                    // Save user data to localStorage
+                    localStorage.setItem('userId', userId);
+                    localStorage.setItem('username', userData.username);
+                    localStorage.setItem('loggedIn', 'true');
+
+                    alert(`Welcome back, ${userData.name || username}!`);
+                    window.location.href = './Profile/Home.html';
+                } else {
+                    alert('Invalid username or password.');
+                }
             } catch (error) {
                 console.error('Error during sign-in:', error);
                 alert(`Error: ${error.message}`);

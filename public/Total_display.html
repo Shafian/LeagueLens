@@ -39,6 +39,10 @@
                 <th>Total Over</th>
                 <th>Total Under</th>
                 <th>Goals Over/Under</th>
+                <th>Spread Points</th>
+                <th>Spread Odds</th>
+                <th>US Books</th>
+                <th>Arbitrage Profit</th>
             </tr>
         </thead>
         <tbody>
@@ -49,39 +53,94 @@
     <script>
         document.getElementById('fetchData').addEventListener('click', async () => {
             try {
-                const response = await fetch('/api/odds?sport=soccer_epl&market=totals');
+                const response = await fetch('/api/odds?sport=soccer_epl&market=totals,spreads');
                 if (!response.ok) {
                     throw new Error('Failed to fetch data');
                 }
 
                 const data = await response.json();
-                console.log('Fetched data:', data); // Debugging: Log fetched data
+                console.log('Fetched data:', data);
+
                 const tableBody = document.getElementById('oddsTable').querySelector('tbody');
                 tableBody.innerHTML = '';
 
+                const usBookmakers = ["DraftKings", "FanDuel", "BetMGM", "Caesars"];
+
                 data.forEach(match => {
-                    const odds = match.bookmakers?.[0]?.markets?.find(m => m.key === 'totals');
-                    if (odds) {
-                        odds.outcomes.forEach(outcome => {
+                    if (match.bookmakers) {
+                        match.bookmakers.forEach(bookmaker => {
+                            if (!usBookmakers.includes(bookmaker.title)) return; // Filter for US bookmakers
+
+                            const totalsMarket = bookmaker.markets.find(m => m.key === 'totals');
+                            const spreadsMarket = bookmaker.markets.find(m => m.key === 'spreads');
+
                             const row = document.createElement('tr');
-                            row.innerHTML = `
-                                <td>${match.event}</td>
-                                <td>${match.home_team}</td>
-                                <td>${match.away_team}</td>
-                                <td>${outcome.name === 'Over' ? outcome.price : ''}</td>
-                                <td>${outcome.name === 'Under' ? outcome.price : ''}</td>
-                                <td>${outcome.point || 'N/A'}</td>
-                            `;
+
+                            if (totalsMarket && totalsMarket.outcomes.length === 2) {
+                                const [outcome1, outcome2] = totalsMarket.outcomes;
+
+                                const impliedProb1 = 1 / outcome1.price;
+                                const impliedProb2 = 1 / outcome2.price;
+                                const totalImpliedProb = impliedProb1 + impliedProb2;
+
+                                if (totalImpliedProb < 1) {
+                                    const stake = 1000; // Assume a total stake of $1000
+                                    const stake1 = (stake * impliedProb1) / totalImpliedProb;
+                                    const stake2 = (stake * impliedProb2) / totalImpliedProb;
+                                    const profit = (stake / totalImpliedProb) - stake;
+
+                                    row.innerHTML = `
+                                        <td>${match.event || 'N/A'}</td>
+                                        <td>${match.home_team || 'N/A'}</td>
+                                        <td>${match.away_team || 'N/A'}</td>
+                                        <td>${outcome1.name === 'Over' ? outcome1.price : ''}</td>
+                                        <td>${outcome2.name === 'Under' ? outcome2.price : ''}</td>
+                                        <td>${outcome1.point || outcome2.point || 'N/A'}</td>
+                                        <td>${spreadsMarket?.outcomes[0]?.point || 'N/A'}</td>
+                                        <td>${spreadsMarket?.outcomes[0]?.price || 'N/A'}</td>
+                                        <td>${bookmaker.title}</td>
+                                        <td>Arbitrage Opportunity: $${profit.toFixed(2)}</td>
+                                    `;
+                                } else {
+                                    row.innerHTML = `
+                                        <td>${match.event || 'N/A'}</td>
+                                        <td>${match.home_team || 'N/A'}</td>
+                                        <td>${match.away_team || 'N/A'}</td>
+                                        <td>${outcome1.name === 'Over' ? outcome1.price : ''}</td>
+                                        <td>${outcome2.name === 'Under' ? outcome2.price : ''}</td>
+                                        <td>${outcome1.point || outcome2.point || 'N/A'}</td>
+                                        <td>${spreadsMarket?.outcomes[0]?.point || 'N/A'}</td>
+                                        <td>${spreadsMarket?.outcomes[0]?.price || 'N/A'}</td>
+                                        <td>${bookmaker.title}</td>
+                                        <td>No Arbitrage</td>
+                                    `;
+                                }
+                            } else {
+                                row.innerHTML = `
+                                    <td>${match.event || 'N/A'}</td>
+                                    <td>${match.home_team || 'N/A'}</td>
+                                    <td>${match.away_team || 'N/A'}</td>
+                                    <td>N/A</td>
+                                    <td>N/A</td>
+                                    <td>N/A</td>
+                                    <td>${spreadsMarket?.outcomes[0]?.point || 'N/A'}</td>
+                                    <td>${spreadsMarket?.outcomes[0]?.price || 'N/A'}</td>
+                                    <td>${bookmaker.title}</td>
+                                    <td>No Arbitrage</td>
+                                `;
+                            }
+
                             tableBody.appendChild(row);
                         });
-                    } else {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td colspan="6">No totals data available for this match</td>
-                        `;
-                        tableBody.appendChild(row);
                     }
                 });
+
+                if (tableBody.innerHTML === '') {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td colspan="10">No arbitrage opportunities found</td>`;
+                    tableBody.appendChild(row);
+                }
+
             } catch (error) {
                 console.error('Error fetching or displaying data:', error);
                 alert('Failed to load data. Please check the console for details.');

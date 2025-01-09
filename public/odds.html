@@ -4,140 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Betting Odds</title>
-    <style>
-         body {
-            font-family: 'Roboto', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-
-        .navbar {
-            background-color: #004b8d;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .navbar .logo {
-            width: 120px;  /* Adjust to your preferred width */
-            height: auto;
-        }
-
-        .navbar h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #fff;
-        }
-
-        .navbar ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-        }
-
-        .navbar ul li {
-            margin: 0 15px;
-        }
-
-        .navbar ul li a {
-            color: #fff;
-            text-decoration: none;
-            font-size: 16px;
-            transition: color 0.3s ease;
-        }
-
-        .navbar ul li a:hover {
-            color: #ffcc00;
-        }
-
-        .container {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 20px auto;
-        }
-
-        h1 {
-            color: #004b8d;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .odds-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .odds-card {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .odds-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-        }
-
-        .odds-card h2 {
-            font-size: 20px;
-            color: #333;
-            margin: 0 0 10px;
-        }
-
-        .odds-card p {
-            font-size: 14px;
-            color: #666;
-            margin: 5px 0;
-        }
-
-        .refresh-button {
-            margin: 20px auto;
-            padding: 10px 20px;
-            background-color: #004b8d;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            display: block;
-            transition: background-color 0.3s ease;
-        }
-
-        .refresh-button:hover {
-            background-color: #ffcc00;
-            color: #004b8d;
-        }
-
-        .error {
-            color: red;
-            margin-top: 20px;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
+    
 </head>
+
 <body>
-    <div class="navbar">
-        <h1><img src="img/LeagueLens.png" alt="LeagueLens" class="logo"></h1>
-        <ul>
-            <li><a href="./Profile/home.html">Home</a></li>
-            <li><a href="./Profile/profile.html">Profile</a></li>
-        <li><a href="arbitrage_betting.html">Arbitrage Betting</a></li>
-        <li><a href="arbitrage_calculator.html">Arbitrage Calculator</a></li>
-        <li><a href="odds.html">Odds Data</a></li>
-        <li><a href="arbitrage_plays">Arbitrage Plays</a></li>
-        <li><a href="Profit_Calendar.html">Profit Calendar</a></li>
-        <li><a href="Expected_Value_Calculator.html">Expected Value Calculator</a></li>
-        </ul>
-    </div>
+    <header class="site-header">
+        <h1>
+            <img src="img/LeagueLens.png" alt="LeagueLens" class="logo">
+            Odds Data
+        </h1>
+        <nav>
+            <ul>
+                <li><a href="./Profile/home.html">Home</a></li>
+                <li><a href="./Profile/profile.html">Profile</a></li>
+                <li><a href="arbitrage_betting.html">Arbitrage Betting</a></li>
+                <li><a href="arbitrage_calculator.html">Arbitrage Calculator</a></li>
+                <li><a class="active" href="odds.html">Odds Data</a></li>
+                <li><a href="../Total_display.html">Total plays</a></li>
+                <li><a href="arbitrage_plays">Arbitrage Plays</a></li>
+                <li><a href="Profit_Calendar.html">Profit Calendar</a></li>
+                <li><a href="Expected_Value_Calculator.html">Expected Value Calculator</a></li>
+            </ul>
+        </nav>
+    </header>
 
     <div class="container">
         <h1>Live Betting Odds</h1>
@@ -240,5 +130,9 @@
         // Fetch odds data on page load
         fetchOdds();
     </script>
+     <footer>
+        <p>&copy; 2024 LeagueLens. LLC. All rights reserved.</p>
+    </footer>
+
 </body>
 </html>
